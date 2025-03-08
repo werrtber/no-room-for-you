@@ -1,0 +1,19 @@
+{
+  "name": "noroomforyou",
+  "version": "1.0.0",
+  "main": "card_jeneration.js",
+  "scripts": {
+    "start": "node card_jeneration.js",
+    "dev": "nodemon card_jeneration.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "mysql2": "^3.12.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
