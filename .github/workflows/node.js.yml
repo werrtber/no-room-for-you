@@ -1,0 +1,32 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Node.js CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the code from GitHub
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up Node.js (if needed)
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # specify the Node.js version you want
+
+      # Install dependencies in the Backend folder
+      - name: Install backend dependencies
+        run: npm install
+        working-directory: ./backend  # Specify the directory where package.json is located
+
+      # Other steps (like running tests, etc.) can follow
