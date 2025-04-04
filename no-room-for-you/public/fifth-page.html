@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style5.css">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>No room for you</title>
+</head>
+
+<body class="fifth-page">
+    <main class="main-fifth">
+    </main> 
+    <div class="rules">
+        <a href="rules-page3.html" class="rules_link">
+          <img class="rules_img" src="rules.svg" alt="rules_emblema">
+        </a>
+      </div>
+      <div class="vote-button-container">
+        <button id="startVoteButton" class="vote-button">Почати голосування</button>
+    </div>
+    <div class="modal" id="voteModal">
+        <div class="modal-inner">
+            <button class="modal-close" id="closeVoteModal">✖</button>
+            <h2 class="kartka">ГОЛОСУВАННЯ:</h2>
+            <div class="vote-container">
+                <form id="voteForm">
+                    <!-- Радіокнопки будуть додані через JavaScript -->
+                </form>
+            </div>
+            <button id="confirmVote" class="confirm-btn">Підтвердити голосування</button>
+        </div>
+    </div>
+
+    <div id="modalContainer">
+        <!-- Тут будуть розміщені всі модальні вікна -->
+        <div class="modal" id="playerModal">
+            <div class="modal-inner">
+                <button class="modal-close" id="closeModal">✖</button>
+                <h2 class="kartka">КАРТКА:</h2>
+                <div class="player-header-container">
+                    <h3>ВИ</h3>
+                </div>
+                <ul class="player-info">
+                    <li>
+                        <input type="radio" id="gender" name="playerInfo">
+                        <label for="gender" class="yellow">Стать: <span>ЖІНКА (чайлдфрі)</span></label>
+                    </li>
+                    <li>
+                        <input type="radio" id="age" name="playerInfo">
+                        <label for="age">Вік: <span>37</span></label>
+                    </li>
+                    <li>
+                        <input type="radio" id="profession" name="playerInfo">
+                        <label for="profession">Професія: <span>лікар</span></label>
+                    </li>
+                    <li>
+                        <input type="radio" id="health" name="playerInfo">
+                        <label for="health">Стан здоров'я: <span>здорова</span></label>
+                    </li>
+                    <li>
+                        <input type="radio" id="skills" name="playerInfo">
+                        <label for="skills">Навички: <span>танцювати танго</span></label>
+                    </li>
+                    <li>
+                        <input type="radio" id="items" name="playerInfo">
+                        <label for="items">Предмети в рюкзаку: <span>чай, гриби, ложка</span></label>
+                    </li>
+                    <li>
+                        <input type="radio" id="flaws" name="playerInfo">
+                        <label for="flaws">Вади: <span>немає</span></label>
+                    </li>
+                </ul>
+                <button id="confirmSelection" class="confirm-btn">Підтвердити</button>
+            </div>
+        </div>
+    </div>
+    <script src="script5.js"></script>
+</body>
+</html>
