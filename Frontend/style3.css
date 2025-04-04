@@ -1,0 +1,298 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap');
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+:where(ul, ol):where([class]) {
+  padding-left: 0;
+}
+
+body,
+:where(blockquote, figure):where([class]) {
+  margin: 0;
+}
+
+:where(
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  ul,
+  ol,
+  dl
+):where([class]) {
+  margin-block: 0;
+}
+
+:where(dd[class]) {
+  margin-left: 0;
+}
+
+:where(fieldset[class]) {
+  margin-left: 0;
+  padding: 0;
+  border: none;
+}
+
+:where(ul[class]) {
+  list-style: none;
+}
+
+:where(address[class]) {
+  font-style: normal;
+}
+
+p {
+  --paragraphMarginBottom: 24px;
+
+  margin-block: 0;
+}
+
+p:where(:not([class]):not(:last-child)) {
+  margin-bottom: var(--paragraphMarginBottom);
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+}
+
+html {
+  height: 100%;
+}
+
+html,
+:has(:target) {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100%;
+  line-height: 1.5;
+}
+
+a:where([class]) {
+  display: inline-flex;
+}
+
+
+button,
+label {
+  cursor: pointer;
+}
+
+:where([fill]:not(
+  [fill="none"],
+  [fill^="url"]
+)) {
+  fill: currentColor;
+}
+
+:where([stroke]:not(
+  [stroke="none"],
+  [stroke^="url"]
+)) {
+  stroke: currentColor;
+}
+
+
+svg * {
+  transition-property: fill, stroke;
+}
+
+
+:where(table) {
+  border-collapse: collapse;
+  border-color: currentColor;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+
+
+
+/* Початок коду */
+
+body {
+    height: 100vh; 
+    width: 100vw; 
+    background: radial-gradient(50% 50% at 50% 50%, #441D3A 0%, #202035 100%);
+    overflow: hidden;
+  }
+
+.main-header{
+    display: flex;
+    padding-top: 3.5vh;
+    justify-content: center;
+    position: relative;
+      }
+    
+.text-header{    
+    color:#F1CEDD;
+    font-size: 37px;
+    font-family: 'Exo 2', sans-serif; font-weight: 600;
+    margin-inline: 70.5px;
+    margin-block: 10px;
+    text-transform: uppercase;
+    position: absolute;
+
+    }
+
+
+.select-conteiner{
+    margin-left: 5.6vh;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    z-index: 300;
+}
+
+.number-of-players{
+    display: block;
+    height: 64px;
+    width: 400px;
+    border: 1px solid;
+    border-color: #FA4794 ;
+    border-radius: 20px;
+    background: transparent;
+    appearance: none;
+    outline: none;
+    padding-left: 21px;
+    color:#BA5B84B2;
+    font-size:30px;
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 200;   
+}
+
+.triangle{
+    color: #FA4794;
+    position: relative;
+    top: 4px;
+    right: 60px;
+    z-index: 100;
+}
+
+
+
+
+.all-players{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    column-gap: 23.2vh;
+    margin-top: 11vh;
+}
+.players{
+    width: 400px;
+    height: 64px;
+    box-sizing: border-box;
+    margin-bottom: 3vh;
+    gap: 0px;
+    border-radius: 20px;
+    border: 1px solid #FA4794;
+    display: flex; 
+    align-items: center;
+    position: relative; 
+    
+    
+}
+
+.players-color{
+    position: absolute;
+    left : 320px;
+    width: 43px;
+    height: 43px;
+    border-radius: 50%;
+    cursor:pointer;
+    background-color: #D9D9D9;
+    border: 1px solid #D9D9D9;    
+    
+}
+.players-text{
+    padding-left: 25px;
+    padding-block: 17px;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 30px; 
+    font-weight: 600;
+    list-style-type: none;
+    color: #BA5B84B2;
+    text-transform: uppercase;
+    display: flex;
+}
+
+
+
+
+.all-button{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    gap: 27.3vh;
+    margin-top: 11vh;
+}
+
+.button1, .button2{
+    width: 370px;
+    height: 80px;
+    border-radius: 30px;
+    border: 1px solid #41416C;
+    background-color: #41416C;
+    padding-right: 35px;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 35px;
+    font-weight: 600;
+    color: #F1CEDD; 
+    text-transform: uppercase;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+ }
+
+.log1 {
+  top: 20px;
+  left: 30px;
+  position: absolute;
+  z-index: 100;
+}
+.log2{
+  top: 20px;
+  left: 30px;
+  position: absolute;
+  z-index: 200;
+}
+
+.logo2{
+    position: absolute;
+    left: 35px;
+  }
