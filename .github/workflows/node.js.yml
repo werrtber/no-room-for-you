@@ -25,8 +25,8 @@ jobs:
           node-version: '14'  # specify the Node.js version you want
 
       # Install dependencies in the Backend folder
-      - name: Install Backend dependencies
+      - name: Install backend dependencies
         run: npm install
-        working-directory: ./Backend  # Specify the directory where package.json is located
+        working-directory: ./backend  # Specify the directory where package.json is located
 
       # Other steps (like running tests, etc.) can follow
