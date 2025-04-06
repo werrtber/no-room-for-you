@@ -74,30 +74,33 @@ exports.createRoom = async (req, res) => {
     }
 };
 
+exports.findRoom = async (req, res) => {
+    const { room_code, player_id } = req.body;
 
-// exports.updateRoom = async (req, res) => {
-//     const { room_code, player_number, story_id } = req.body;
+    try {
+        const pool = db();
 
-//     if (!room_code || !player_number || !story_id) {
-//         return res.status(400).json({ error: 'Всі поля (room_code, player_number, story_id) є обов\'язковими!' });
-//     }
+        // Перевіряємо, чи існує кімната за room_code
+        let existingRoom = null;
+        if (room_code) {
+            existingRoom = await getRoomByCode(room_code);
+        }
 
-//     try {
-//         const pool = db();
-
-//         // Оновлюємо дані кімнати
-//         const [result] = await pool.execute(
-//             'UPDATE room SET player_number = ?, story_id = ? WHERE room_code = ?',
-//             [player_number, story_id, room_code]
-//         );
-
-//         if (result.affectedRows > 0) {
-//             return res.status(200).json({ message: 'Кімната успішно оновлена!', room_code });
-//         } else {
-//             return res.status(404).json({ error: 'Кімната не знайдена.' });
-//         }
-//     } catch (error) {
-//         console.error('Помилка при оновленні кімнати:', error);
-//         return res.status(500).json({ error: 'Помилка сервера.' });
-//     }
-// };
+        if (existingRoom) {
+            await pool.execute(
+                'UPDATE player SET room_id = ? WHERE player_id = ?',
+                [existingRoom.room_id, player_id]
+            );
+            return res.status(200).json({
+                room_id: existingRoom.id,
+                valid: true
+            });
+        } else {
+                return res.status(500).json({ error: 'Не вдалося знайти кімнату.' , valid: false});
+            
+        }
+    } catch (error) {
+        console.error('Помилка при пошуку кімнати:', error);
+        return res.status(500).json({ error: error , valid: false});
+    }
+};
