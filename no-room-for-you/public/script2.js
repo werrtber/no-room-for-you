@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Отримання нікнейму з серверу
     const player_id = sessionStorage.getItem('player_id');
-    fetch("http://localhost:3000/api/get-nickname/${player_id}")
+    fetch(`http://localhost:3000/api/get-nickname/${player_id}`)
         .then(response => {
             if (!response.ok) throw new Error('Помилка сервера');
             return response.json();
