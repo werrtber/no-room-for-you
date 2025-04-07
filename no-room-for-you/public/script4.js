@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevButton = document.getElementById('prev-story');
     const nextButton = document.getElementById('next-story');
     const chooseButton = document.querySelector('.button'); // Кнопка "Обрати"
-    let currentStoryId = 1; // Початкове значення історії
+    let currentStoryId = 0; // Початкове значення історії
 
     const roomCode = sessionStorage.getItem('room_code'); // Отримуємо код кімнати з сесії
 
@@ -24,9 +24,9 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(data => {
                 console.log('Отримані дані про історію:', data); // Логування
-                document.getElementById('history-title').innerHTML = data.historyTitle || 'Назва історії недоступна';
+                document.getElementById('history-title').innerHTML = data.story || 'Але для початку оберіть історію, що стала причиною для виживання, а не життя.';
                 document.getElementById('history-subtitle').innerHTML = data.historySubtitle || '';
-                document.getElementById('story-name').innerHTML = `Історія №${data.id}`;
+                document.getElementById('story-name').innerHTML = data.storyName;
             })
             .catch(error => {
                 console.error('Помилка при завантаженні історії:', error);
@@ -40,13 +40,13 @@ document.addEventListener('DOMContentLoaded', () => {
     prevButton.addEventListener('click', () => {
         if (currentStoryId > 1) {
             currentStoryId--;
-            loadStory(currentStoryId);
+            loadStory(currentStoryId%20+1);
         }
     });
 
     nextButton.addEventListener('click', () => {
         currentStoryId++;
-        loadStory(currentStoryId);
+        loadStory(currentStoryId%20+1);
     });
 
     // Обробник події для кнопки "Обрати"
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({
                     room_code: roomCode,
-                    story_id: currentStoryId,
+                    story_id: currentStoryId%20+1,
                 }),
             });
 
@@ -80,5 +80,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Завантажуємо першу історію при завантаженні сторінки
-    loadStory(currentStoryId);
+    loadStory(currentStoryId+1);
 });

@@ -2,12 +2,13 @@ const db = require('../db/db'); // Імпортуємо пул підключе�
 
 exports.getStory = async (req, res) => {
     const { storyId } = req.params;
+   
 
     try {
         console.log('➡️ Спроба підключення до бази даних...'); // Логування
         const pool = db();
         const [rows] = await pool.execute(
-            'SELECT story_id AS id, story AS historyTitle FROM story WHERE story_id = ?',
+            'SELECT story_id AS id, story, story_name AS storyName FROM story WHERE story_id = ?',
             [storyId]
         );
 
@@ -25,7 +26,6 @@ exports.getStory = async (req, res) => {
 };
 exports.updateRoomStory = async (req, res) => {
     const { room_code, story_id } = req.body;
-
     if (!room_code || !story_id) {
         return res.status(400).json({ error: 'Код кімнати та ID історії є обов\'язковими полями!' });
     }
