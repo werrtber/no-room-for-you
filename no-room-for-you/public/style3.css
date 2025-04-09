@@ -559,7 +559,7 @@ body {
 }
 
 
-.modal{
+.modalRules{
   backdrop-filter: blur(3px);
   opacity: 0;
   position: fixed;
@@ -574,7 +574,7 @@ body {
   justify-content: center;
 }
 
-.modal.open{
+.modalRules.open{
   opacity: 1;
   z-index: 999;
 }
