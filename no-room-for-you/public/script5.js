@@ -278,4 +278,15 @@ const startVoteButton = document.getElementById('startVoteButton');
         }
     });
 
+    const openBtnRules = document.getElementById("openModalRules");
+    const closeBtnRules = document.getElementById("closeModalRules");
+    const modalRules = document.getElementById("modalRules");
+
+    openBtnRules.addEventListener("click", () => {
+        modalRules.classList.add("open");
+    });
+
+    closeBtnRules.addEventListener("click", () => {
+        modalRules.classList.remove("open");
+    });
 });

@@ -233,4 +233,143 @@ form {
     text-decoration: none; 
     color: inherit;
     flex-direction: row;
+    color: none;
+    background: none; /* або background-color: transparent; */
+    border: none;     /* якщо треба прибрати рамку */
+    cursor: pointer;  /* щоб при наведенні був вигляд кнопки */
+}
+
+
+
+.modal{
+    backdrop-filter: blur(3px);
+    opacity: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: all 0.3 ease-in-out;
+    z-index: -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.open{
+    opacity: 1;
+    z-index: 999;
+}
+
+.modal-inner{
+    height: 100vh; 
+    width: 100vw; 
+    background: radial-gradient(50% 50% at 50% 50%, #441D3A 0%, #202035 100%);
+    overflow: hidden;
+}
+
+
+.cat {
+    display: flex;
+    justify-content: end;
+    align-items: flex-end;
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 450px; /* changed from 450px */
+    height: 70px; /* changed from 70px */
+    border-radius: 30px; /* changed from 30px */
+    border: 0.1vh solid #41416C; /* changed from 1px */
+    background-color: #41416C;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 1.8rem; /* changed from 30px */
+    font-weight: 600;
+    color: #F1CEDD;
+    text-transform: uppercase;
+    font-weight: 600;
+    line-height: 100%;
+    letter-spacing: 0%;
+    cursor: pointer;
+}
+.button_main {
+    display: flex;
+    justify-content: center;
+    padding-left: 13vw; /* changed from 220px */
+}
+.main_text {
+    display: flex;
+    justify-content: center;
+    text-transform: uppercase;
+    color: #fcb0d1;
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 600;
+    font-size: 2.2rem; /* changed from 35px */
+    line-height: 100%;
+    letter-spacing: 0%;
+    margin-bottom: 1.5vh; /* changed from 25px */
+}
+
+.main_text2 {
+    display: flex;
+    justify-content: center;
+    text-transform: uppercase;
+    color: #F1CEDD;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 1.6rem; /* changed from 25px */
+    line-height: 100%;
+    letter-spacing: 0%;
+    margin-bottom: 1.5vh; /* changed from 25px */
+}
+.main_text3 {
+    display: flex;
+    justify-content: center;
+    color: #F1CEDD;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 1.5rem; /* changed from 24px */
+    line-height: 100%;
+    letter-spacing: 0%;
+    margin-bottom: 1.8vh; /* changed from 30px */
+}
+.main_text4 {
+    display: flex;
+    justify-content: start;
+    color: #F1CEDD;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 1.5rem; /* changed from 24px */
+    line-height: 100%;
+    letter-spacing: 0%;
+    margin-bottom: 2.2vh; /* changed from 35px */
+}
+
+.main_text5 {
+    display: flex;
+    justify-content: center;
+    color: #fcb0d1;
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 600;
+    font-size: 1.5rem; /* changed from 24px */
+    line-height: 100%;
+    letter-spacing: 0%;
+    margin-bottom: 1.8vh; /* changed from 30px */
+    margin-left: 12vw; /* changed from 200px */
+}
+
+.rules-modal {
+    display: flex;
+    justify-content: center;
+    padding: 2vh; /* changed from 30px */
+    flex-direction: column;
+}
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+.row2 {
+    display: flex;
+    justify-content: end;
+    padding-top: 2.5vh; /* changed from 40px */
 }
