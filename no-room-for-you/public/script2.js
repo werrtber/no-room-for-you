@@ -65,7 +65,7 @@ submitBtn.addEventListener("click", () => {
     })
     .then(data => {
         if (data.valid) {
-
+            sessionStorage.setItem('room_code', inputValue);
             window.location.href = 'third-page.html';
         } else {
             console.log(data);

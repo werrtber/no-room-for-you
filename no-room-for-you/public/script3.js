@@ -1,3 +1,28 @@
+const socket = io('http://localhost:3000');
+
+const room_code = sessionStorage.getItem('room_code');
+const player_id = sessionStorage.getItem('player_id');
+
+socket.on('connect', () => {
+    console.log('🟢 Підключено до сервера. Socket ID:', socket.id);
+
+    socket.emit('joinRoom', { room_code, player_id });
+});
+
+let playerPosition = null;
+
+socket.on('roomJoined', ({ position, playersInRoom }) => {
+    console.log(`📦 Ви — Гравець ${position}`);
+    playerPosition = position;
+
+    if (playerPosition !== 1) {
+        document.querySelector('.number-of-players').disabled = true;
+        const startButton = document.querySelectorAll('.all-button button')[1];
+        if (startButton) startButton.disabled = true;
+    }
+});
+
+
 const playerSelect = document.querySelector('.number-of-players');
 const playersList = document.getElementById('players-list');
 let selectedColors = [];
