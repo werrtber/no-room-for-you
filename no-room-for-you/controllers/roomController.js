@@ -23,7 +23,7 @@ async function getRoomByCode(room_code) {
 }
 
 exports.createRoom = async (req, res) => {
-    const { player_number, room_code } = req.body;
+    const { player_number, room_code, player_id } = req.body;
 
     if (!player_number) {
         return res.status(400).json({ error: 'Кількість гравців є обов\'язковим полем!' });
@@ -57,8 +57,12 @@ exports.createRoom = async (req, res) => {
                 'INSERT INTO room (room_code, player_number) VALUES (?, ?)',
                 [newRoomCode, player_number]
             );
-
+            
             if (result.insertId) {
+                await pool.execute(
+                    'UPDATE player SET room_id = ? WHERE player_id = ?',
+                    [result.insertId, player_id]
+                );
                 return res.status(200).json({
                     message: 'Кімната успішно створена!',
                     room_code: newRoomCode,

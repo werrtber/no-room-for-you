@@ -142,8 +142,8 @@ function sendPlayerData(playerName, playerColor, numPlayers) {
 playerSelect.addEventListener('change', () => {
     const numPlayers = parseInt(playerSelect.value);
     updatePlayers();
-    room_code = sessionStorage.getItem('room_code') || null;
-    createOrUpdateRoom(numPlayers, room_code);
+    //room_code = sessionStorage.getItem('room_code') || null;
+    createOrUpdateRoom(numPlayers, sessionStorage.getItem('room_code'));
 });
 
 
@@ -218,7 +218,8 @@ async function createOrUpdateRoom(playerNumber, roomCode) {
             },
             body: JSON.stringify({
                 player_number: playerNumber,// Приклад: story_id за замовчуванням
-                room_code: roomCode // Передаємо room_code, якщо він існує
+                room_code: roomCode, 
+                player_id: sessionStorage.getItem('player_id')// Передаємо room_code, якщо він існує
             }),
         });
 
