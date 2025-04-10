@@ -141,8 +141,7 @@ body {
     overflow: hidden;
   }
 .main{
-    padding-top: 23vh;
-    padding-bottom: 11vh;
+    padding-top: 30vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -155,20 +154,12 @@ body {
     user-select: none;
 }
 .text1 h2{
-  font-size: 50px;
+  font-size: 40px;
   color: rgba(241, 206, 221, 1);
   font-family: 'Exo 2', sans-serif; 
   font-weight: 600;
   line-height: 54px;
-  padding-inline: 30px;
-}
-
-.text2 h2{
-    font-size: 50px;
-    color: rgba(241, 206, 221, 1);
-    font-family: 'Exo 2', sans-serif; 
-    font-weight: 600;
-    line-height: 54px; 
+  padding-inline: 60px;
 }
 
 .button{
@@ -190,6 +181,9 @@ body {
     cursor: pointer;
     transition: all 0.2s ease;
     user-select: none;
+    position: fixed;
+    top:80%;
+    left: 39%;
 }
 .button:hover{
     background: #383869;
@@ -210,10 +204,8 @@ button{
 
 
 p{
-    width: 220px;
-    height: 80px;
     font-family: 'Exo 2', sans-serif; 
-    font-size: 40px;
+    font-size: 35px;
     font-weight: 600;
     line-height: 72px;
     text-align: center;
@@ -225,9 +217,13 @@ p{
 
 
 .choose-history{
+  
     display: flex;
     flex-direction: row;
     align-items: center;
+    position: fixed;
+    top:65%;
+    gap: 10px;
 }
 
 

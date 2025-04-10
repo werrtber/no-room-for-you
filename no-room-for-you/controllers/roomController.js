@@ -23,6 +23,8 @@ async function getRoomByCode(room_code) {
 }
 
 exports.createRoom = async (req, res) => {
+    console.log('👉 /create-room запит отримано');
+    console.log('🧾 Тіло запиту:', req.body);
     const { player_number, room_code, player_id } = req.body;
 
     if (!player_number) {
@@ -77,7 +79,31 @@ exports.createRoom = async (req, res) => {
         return res.status(500).json({ error: 'Помилка сервера.' });
     }
 };
-
+exports.updateRoom = async (req, res) => {
+    try {
+        const { player_number, room_code, player_id } = req.body;
+        
+        if (!room_code) {
+            return res.status(400).json({ error: 'Код кімнати не вказано' });
+        }
+        
+        const existingRoom = await db.getRoom(room_code);
+        if (!existingRoom) {
+            return res.status(404).json({ error: 'Кімнату не знайдено' });
+        }
+        
+        await db.updateRoom(room_code, player_number);
+        
+        res.json({ 
+            success: true, 
+            message: 'Кімнату оновлено', 
+            room_code 
+        });
+    } catch (error) {
+        console.error('Помилка при оновленні кімнати:', error);
+        res.status(500).json({ error: 'Помилка сервера' });
+    }
+};
 exports.findRoom = async (req, res) => {
     const { room_code, player_id } = req.body;
 

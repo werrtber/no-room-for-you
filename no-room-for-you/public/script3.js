@@ -1,16 +1,20 @@
+// Socket.IO підключення
 const socket = io('http://localhost:3000');
 
 const room_code = sessionStorage.getItem('room_code');
 const player_id = sessionStorage.getItem('player_id');
+const isHost = sessionStorage.getItem('is_host') === 'true';
 
 socket.on('connect', () => {
     console.log('🟢 Підключено до сервера. Socket ID:', socket.id);
 
+    // Вхід у кімнату
     socket.emit('joinRoom', { room_code, player_id });
 });
 
 let playerPosition = null;
 
+// Обробка відповіді на приєднання
 socket.on('roomJoined', ({ position, playersInRoom }) => {
     console.log(`📦 Ви — Гравець ${position}`);
     playerPosition = position;
@@ -22,31 +26,27 @@ socket.on('roomJoined', ({ position, playersInRoom }) => {
     }
 });
 
+// Обробка оновлення списку гравців кімнати
+socket.on('roomUpdate', ({ players }) => {
+    // Очищуємо список гравців
+    playersList.innerHTML = "";
+    // Для кожного гравця встановлюємо позицію (індекс + 1)
+    players.forEach((player, idx) => {
+         const pos = idx + 1;
+         // Якщо потрібно – можна витягнути нікнейми із додаткових даних, тут поки що базово:
+         const name = (player.playerId === player_id) ? "Ви" : `Гравець ${pos}`;
+         const playerDiv = createPlayerElement(name, `player-${pos}`);
+         playersList.appendChild(playerDiv);
+    });
+});
 
+// Використовувані DOM-елементи
 const playerSelect = document.querySelector('.number-of-players');
 const playersList = document.getElementById('players-list');
 let selectedColors = [];
 let players = [];
 
-function updatePlayers() {
-    playersList.innerHTML = '';
-    const numPlayers = parseInt(playerSelect.value);
-    if (isNaN(numPlayers) || numPlayers <= 0) return;
-
-    for (let i = 0; i < numPlayers; i++) {
-        if (players[i]) {
-            playersList.appendChild(players[i].playerDiv);
-        } else {
-            const playerDiv = createPlayerElement(`Гравець ${i + 1}`, `player-${i + 1}`);
-            players.push({ playerDiv, playerText: `Гравець ${i + 1}`, playerColorLink: playerDiv.querySelector('.players-color') });
-            playersList.appendChild(playerDiv);
-        }
-    }
-    if (players.length > numPlayers) {
-        players = players.slice(0, numPlayers);
-    }
-}
-
+// Функція, що створює елемент гравця
 function createPlayerElement(playerName, playerClass) {
     const playerDiv = document.createElement('div');
     playerDiv.classList.add('players', playerClass);
@@ -65,9 +65,12 @@ function createPlayerElement(playerName, playerClass) {
     return playerDiv;
 }
 
+// Функція відкриття модального вікна для вибору кольору
 function openModal(playerElement) {
-    const playerClass = playerElement.closest('.players').classList;
-    if (playerClass.contains('player-1')) {
+    // Тепер дозволяємо змінювати колір лише для свого елемента, тобто для гравця, що відповідає отриманій позиції
+    const playerClasses = playerElement.closest('.players').classList;
+    // Приклад: якщо ви – гравець 1, тоді тільки елементи з класом "player-1" можуть змінювати колір
+    if (playerClasses.contains(`player-${playerPosition}`)) {
         window.selectedPlayerElement = playerElement;
         document.getElementById('colorModal').style.display = 'block';
     } else {
@@ -80,7 +83,7 @@ function closeModal() {
 }
 
 function selectColor(color) {
-    if (window.selectedPlayerElement && window.selectedPlayerElement.closest('.players').classList.contains('player-1')) {
+    if (window.selectedPlayerElement && window.selectedPlayerElement.closest('.players').classList.contains(`player-${playerPosition}`)) {
         if (!selectedColors.includes(color)) {
             window.selectedPlayerElement.style.backgroundColor = color;
             selectedColors.push(color);
@@ -139,39 +142,57 @@ function sendPlayerData(playerName, playerColor, numPlayers) {
             console.error('Помилка при відправці даних:', error);
         });
 }
+
+// Якщо змінюється кількість гравців — лише хост оновлює кімнату
 playerSelect.addEventListener('change', () => {
     const numPlayers = parseInt(playerSelect.value);
-    updatePlayers();
-    //room_code = sessionStorage.getItem('room_code') || null;
-    createOrUpdateRoom(numPlayers, sessionStorage.getItem('room_code'));
+    if (isHost) {
+        if (!room_code) {
+            createRoom(numPlayers);
+          } else {
+            updateRoom(numPlayers, room_code);
+          }
+          
+    }
 });
 
-
+// При завантаженні сторінки запускається початкове формування списку (для хоста)
 document.addEventListener("DOMContentLoaded", function () {
     const defaultNumPlayers = 6;
     playerSelect.value = defaultNumPlayers;
-    updatePlayers();
-    createOrUpdateRoom(defaultNumPlayers, null);
+
+    if (isHost) {
+        if (!room_code) {
+            createRoom(defaultNumPlayers);
+          } else {
+            updateRoom(defaultNumPlayers, room_code);
+          }
+          
+    }
 
     const player_id = sessionStorage.getItem('player_id');
     fetch(`http://localhost:3000/api/get-nickname/${player_id}`)
         .then(response => response.json())
         .then(data => {
             const savedNickname = data.nickname;
+            // Тут хост формує початковий елемент. Подальше оновлення буде через roomUpdate
             const firstPlayer = playersList.querySelector('.players');
-            const firstPlayerText = firstPlayer.querySelector('.players-text');
-            firstPlayerText.textContent = `${savedNickname || 'Гравець'}`;
-            const firstPlayerColor = firstPlayer.querySelector('.players-color').style.backgroundColor || '#FFFFFF';
-            const numPlayers = parseInt(playerSelect.value);
-            sendPlayerData(savedNickname, firstPlayerColor, numPlayers);
+            if(firstPlayer){
+                const firstPlayerText = firstPlayer.querySelector('.players-text');
+                firstPlayerText.textContent = `${savedNickname || 'Гравець'}`;
+                const firstPlayerColor = firstPlayer.querySelector('.players-color').style.backgroundColor || '#FFFFFF';
+                const numPlayers = parseInt(playerSelect.value);
+                sendPlayerData(savedNickname, firstPlayerColor, numPlayers);
+            }
         })
         .catch(error => {
             console.error("Помилка при отриманні нікнейму:", error);
         });
 });
 
+// Логіка копіювання запрошення
 document.querySelector('.button2').addEventListener('click', function () {
-    const link = "https://example.com";
+    const link = "https://example.com"; // Замініть на реальне посилання
     const tempInput = document.createElement('input');
     document.body.appendChild(tempInput);
     tempInput.value = link;
@@ -186,60 +207,83 @@ document.querySelector('.button2').addEventListener('click', function () {
     }, 2000);
 });
 document.querySelector('.button2').addEventListener('click', function() {
-  // Приклад посилання для копіювання, можна замінити на потрібне
-  const link = "https://example.com"; 
+    const link = "https://example.com"; 
+    const tempInput = document.createElement('input');
+    document.body.appendChild(tempInput);
+    tempInput.value = link;
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
 
-  // Створюємо тимчасовий елемент input для копіювання в буфер обміну
-  const tempInput = document.createElement('input');
-  document.body.appendChild(tempInput);
-  tempInput.value = link;
-  tempInput.select();
-  document.execCommand('copy');
-  document.body.removeChild(tempInput);
+    const message = document.getElementById('copyMessage');
+    message.style.display = 'block';
 
-  // Показуємо повідомлення
-  const message = document.getElementById('copyMessage');
-  message.style.display = 'block';
-
-  // Сховати повідомлення через 2 секунди
-  setTimeout(function() {
-    message.style.display = 'none';
-  }, 2000);
+    setTimeout(function() {
+        message.style.display = 'none';
+    }, 2000);
 });
-// script3.js
-// ...
-async function createOrUpdateRoom(playerNumber, roomCode) {
+
+// Функція createOrUpdateRoom викликається лише для хоста
+async function createRoom(playerNumber) {
     try {
-        const response = await fetch('http://localhost:3000/api/create-room', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                player_number: playerNumber,// Приклад: story_id за замовчуванням
-                room_code: roomCode, 
-                player_id: sessionStorage.getItem('player_id')// Передаємо room_code, якщо він існує
-            }),
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`HTTP error! Status: ${response.status} - ${errorData.error}`);
-        }
-
-        const data = await response.json();
-        console.log('Результат:', data);
-
-        if (data.room_code) {
-            sessionStorage.setItem('room_code', data.room_code); // Зберігаємо room_code
-        }
+      const response = await fetch('http://localhost:3000/api/create-room', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          player_number: playerNumber
+        }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`HTTP error! Status: ${response.status} - ${errorData.error}`);
+      }
+  
+      const data = await response.json();
+      console.log('✅ Кімнату створено:', data);
+  
+      if (data.room_code) {
+        sessionStorage.setItem('room_code', data.room_code);
+      }
     } catch (error) {
-        console.error('Помилка:', error.message || error);
+      console.error('❌ Помилка створення кімнати:', error.message || error);
     }
+  }
+  async function updateRoom(playerNumber, roomCode) {
+    try {
+      const response = await fetch('http://localhost:3000/api/create-room', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          player_number: playerNumber,
+          room_code: roomCode
+        }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`HTTP error! Status: ${response.status} - ${errorData.error}`);
+      }
+  
+      const data = await response.json();
+      console.log('🔄 Кімнату оновлено:', data);
+  
+      if (data.room_code) {
+        sessionStorage.setItem('room_code', data.room_code);
+      }
+    } catch (error) {
+      console.error('❌ Помилка оновлення кімнати:', error.message || error);
+    }
+  }
+    
 
-}
-
+// Логіка модального вікна з правилами
 const openBtn = document.getElementById("openModal");
 const closeBtn = document.getElementById("closeModal");
 const modal = document.getElementById("modal");

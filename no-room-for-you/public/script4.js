@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Функція для завантаження історії
     function loadStory(storyId) {
-        fetch(`http://localhost:3000/api/stories/${storyId}`)
+        fetch(`https://no-room-for-you.vercel.app/api/stories/${storyId}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -25,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 console.log('Отримані дані про історію:', data); // Логування
                 document.getElementById('history-title').innerHTML = data.story || 'Але для початку оберіть історію, що стала причиною для виживання, а не життя.';
-                document.getElementById('history-subtitle').innerHTML = data.historySubtitle || '';
                 document.getElementById('story-name').innerHTML = data.storyName;
             })
             .catch(error => {
@@ -54,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault(); // Зупиняємо стандартну поведінку форми
 
         try {
-            const response = await fetch('http://localhost:3000/api/update-room-story', {
+            const response = await fetch('https://no-room-for-you.vercel.app/api/update-room-story', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
