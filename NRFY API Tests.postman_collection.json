@@ -1,0 +1,1369 @@
+{
+	"info": {
+		"_postman_id": "cd5eb1eb-fad9-4749-9cb2-ace67cd91b8c",
+		"name": "NRFY API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43613342"
+	},
+	"item": [
+		{
+			"name": "ServerTests",
+			"item": [
+				{
+					"name": "Server Launch",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Сервер запущено і відповідає зі статусом 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Відповідь є HTML\", function () {",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('text/html');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"name": "cache-control",
+								"type": "text"
+							},
+							{
+								"key": "Postman-Token",
+								"value": "<calculated when request is sent>",
+								"name": "postman-token",
+								"type": "text"
+							},
+							{
+								"key": "Host",
+								"value": "<calculated when request is sent>",
+								"name": "host",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "PostmanRuntime/7.39.1",
+								"name": "user-agent",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*",
+								"name": "accept",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate, br",
+								"name": "accept-encoding",
+								"type": "text"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive",
+								"name": "connection",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Main Page Launch",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус відповіді дорівнює 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Відповідь є HTML\", function () {",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('text/html');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"name": "cache-control",
+								"type": "text"
+							},
+							{
+								"key": "Postman-Token",
+								"value": "<calculated when request is sent>",
+								"name": "postman-token",
+								"type": "text"
+							},
+							{
+								"key": "Host",
+								"value": "<calculated when request is sent>",
+								"name": "host",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "PostmanRuntime/7.39.1",
+								"name": "user-agent",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*",
+								"name": "accept",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate, br",
+								"name": "accept-encoding",
+								"type": "text"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive",
+								"name": "connection",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "NicknameControllerTests",
+			"item": [
+				{
+					"name": "Save Nickname",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Успішне збереження нікнейму\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.equal(\"Нікнейм успішно збережено!\");",
+									"});",
+									"",
+									"pm.test(\"Відповідь має бути JSON\", function () {",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nickname\": \"TestPlayer\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/save-nickname",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"save-nickname"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Empty Nickname",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Помилка при порожньому нікнеймі\", function () {",
+									"    pm.response.to.have.status(400);",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.error).to.equal(\"Ім'я не може бути порожнім!\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/save-nickname",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"save-nickname"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Nickname",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Успішне отримання нікнейму\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"nickname\");",
+									"    pm.expect(jsonData.nickname).to.satisfy((val) => val === null || typeof val === \"string\", \"Нікнейм має бути null або рядком\");",
+									"});",
+									"",
+									"pm.test(\"Відповідь має бути JSON\", function () {",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/get-nickname/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"get-nickname",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Null Nickname by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус відповіді - 200 ОК\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Відповідь містить нікнейм зі значенням null\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('nickname');",
+									"    pm.expect(jsonData.nickname).to.be.null;",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"name": "cache-control",
+								"type": "text"
+							},
+							{
+								"key": "Postman-Token",
+								"value": "<calculated when request is sent>",
+								"name": "postman-token",
+								"type": "text"
+							},
+							{
+								"key": "Host",
+								"value": "<calculated when request is sent>",
+								"name": "host",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "PostmanRuntime/7.39.1",
+								"name": "user-agent",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*",
+								"name": "accept",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate, br",
+								"name": "accept-encoding",
+								"type": "text"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive",
+								"name": "connection",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/get-nickname/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"get-nickname",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "",
+									"type": "string"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PlayerControllerTests",
+			"item": [
+				{
+					"name": "Get Players",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус відповіді дорівнює 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Відповідь є JSON\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/player-data",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"player-data"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Player",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус відповіді - 200 ОК\", function () {",
+									"    console.log(\"Статус:\", pm.response.code); // Дебаг",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Успішне збереження даних гравця\", function () {",
+									"    console.log(\"Відповідь:\", pm.response.json()); // Дебаг",
+									"    pm.response.to.have.status(200);",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"message\");",
+									"    pm.expect(jsonData.message).to.equal(\"Дані гравця успішно збережено!\");",
+									"    pm.expect(jsonData).to.not.have.property(\"error\");",
+									"});",
+									"",
+									"pm.test(\"Відповідь у форматі JSON\", function () {",
+									"    console.log(\"Content-Type:\", pm.response.headers.get(\"Content-Type\")); // Дебаг",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"name": "cache-control",
+								"type": "text"
+							},
+							{
+								"key": "Postman-Token",
+								"value": "<calculated when request is sent>",
+								"name": "postman-token",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"name": "content-type",
+								"type": "text"
+							},
+							{
+								"key": "Content-Length",
+								"value": "<calculated when request is sent>",
+								"name": "content-length",
+								"type": "text"
+							},
+							{
+								"key": "Host",
+								"value": "<calculated when request is sent>",
+								"name": "host",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "PostmanRuntime/7.39.1",
+								"name": "user-agent",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*",
+								"name": "accept",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate, br",
+								"name": "accept-encoding",
+								"type": "text"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive",
+								"name": "connection",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"player_id\": 1,\n    \"color\": \"#FFFFFF\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/save-player-data",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"save-player-data"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Non-Excisting Player",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Помилка, якщо гравця не знайдено\", function () {",
+									"    pm.response.to.have.status(500);",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"error\");",
+									"    pm.expect(jsonData.error).to.equal(\"Не вдалося зберегти дані гравця.\");",
+									"});",
+									"",
+									"pm.test(\"Відповідь у форматі JSON\", function () {",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"player_id\": 999,\n    \"color\": \"blue\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/save-player-data",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"save-player-data"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "No Color Chosen",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Помилка при відсутності кольору\", function () {",
+									"    pm.response.to.have.status(400);",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.error).to.equal(\"Id та колір є обов'язковими полями!\");",
+									"});",
+									"",
+									"pm.test(\"Відповідь у форматі JSON\", function () {",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nickname\": \"Player1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/save-player-data",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"save-player-data"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PlayerListControllerTests",
+			"item": [
+				{
+					"name": "Server Error",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус 500 при помилці сервера\", function () {",
+									"    pm.response.to.have.status(500);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property(\"error\").that.equals(\"Помилка сервера\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/players",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"players"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Players Structure",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус відповіді - 200 OK\", function () {",
+									"    console.log(\"Статус:\", pm.response.code);",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Відповідь у форматі JSON\", function () {",
+									"    console.log(\"Content-Type:\", pm.response.headers.get(\"Content-Type\"));",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Відповідь є масивом або помилкою\", function () {",
+									"    const response = pm.response.json();",
+									"    console.log(\"Відповідь:\", response);",
+									"",
+									"    if (pm.response.code === 200) {",
+									"        pm.expect(response).to.be.an(\"array\", \"При статусі 200 очікується масив\");",
+									"    } else if (pm.response.code === 500) {",
+									"        pm.expect(response).to.be.an(\"object\", \"При статусі 500 очікується об’єкт із помилкою\");",
+									"        pm.expect(response).to.have.property(\"error\").that.equals(\"Помилка сервера\");",
+									"    }",
+									"});",
+									"",
+									"pm.test(\"Структура гравців у масиві\", function () {",
+									"    const response = pm.response.json();",
+									"",
+									"    if (pm.response.code === 200) {",
+									"        if (response.length > 0) {",
+									"            response.forEach(player => {",
+									"                pm.expect(player).to.be.an(\"object\");",
+									"                pm.expect(player).to.have.property(\"player_id\");",
+									"                pm.expect(player.player_id).to.be.a(\"string\").or.a(\"number\");",
+									"                pm.expect(player).to.have.property(\"color\").that.is.a(\"string\");",
+									"                pm.expect(player).to.have.property(\"isUser\").that.is.a(\"boolean\");",
+									"            });",
+									"            const usersWithIsUserTrue = response.filter(player => player.isUser === true);",
+									"            pm.expect(usersWithIsUserTrue).to.have.lengthOf(1, \"Має бути один гравець із isUser: true\");",
+									"            pm.expect(response[response.length - 1].isUser).to.equal(true, \"Останній гравець має isUser: true\");",
+									"        } else {",
+									"            pm.expect(response).to.have.lengthOf(0, \"Очікується порожній масив, якщо в базі немає гравців\");",
+									"            console.log(\"Масив гравців порожній\");",
+									"        }",
+									"    } else if (pm.response.code === 500) {",
+									"        pm.expect(response).to.be.an(\"object\");",
+									"        pm.expect(response.error).to.equal(\"Помилка сервера\");",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/players",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"players"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Empty List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Порожня база повертає порожній масив\", function () {",
+									"    const response = pm.response.json();",
+									"    if (response.length === 0) {",
+									"        pm.expect(response).to.be.an(\"array\").that.is.empty;",
+									"    }",
+									"});",
+									"",
+									"pm.test(\"Порожня база повертає повідомлення\", function () {",
+									"    const response = pm.response.json();",
+									"    if (response.message) {",
+									"        pm.expect(response.message).to.equal(\"Гравців немає\");",
+									"    }",
+									"});",
+									"",
+									"pm.test(\"Статус 500 при відсутності гравців\", function () {",
+									"    pm.response.to.have.status(500);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property(\"error\").that.equals(\"Помилка сервера\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/players",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"players"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "RoomControllerTests",
+			"item": [
+				{
+					"name": "Create Room",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус відповіді - 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Успішне створення нової комнаті\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an(\"object\");",
+									"    pm.expect(response).to.have.property(\"message\").that.equals(\"Кімната успішно створена!\");",
+									"    pm.expect(response).to.have.property(\"room_code\").that.is.a(\"string\").and.has.length(6);",
+									"    pm.expect(response).to.have.property(\"room_id\").that.is.a(\"number\");",
+									"});",
+									"",
+									"pm.test(\"Код кімнати є унікальним (6 символів)\", function () {",
+									"    const response = pm.response.json();",
+									"    const roomCode = response.room_code;",
+									"    pm.expect(roomCode).to.match(/^[A-Z0-9]{6}$/); // Перевіряємо формат коду",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"name": "cache-control",
+								"type": "text"
+							},
+							{
+								"key": "Postman-Token",
+								"value": "<calculated when request is sent>",
+								"name": "postman-token",
+								"type": "text"
+							},
+							{
+								"key": "Content-Length",
+								"value": "0",
+								"name": "content-length",
+								"type": "text"
+							},
+							{
+								"key": "Host",
+								"value": "<calculated when request is sent>",
+								"name": "host",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "PostmanRuntime/7.39.1",
+								"name": "user-agent",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*",
+								"name": "accept",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate, br",
+								"name": "accept-encoding",
+								"type": "text"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive",
+								"name": "connection",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"player_number\": 4\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/create-room",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"create-room"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Room Without Player Number",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус 400 при відсутності player_number\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Помилка через відсутність player_number\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an(\"object\");",
+									"    pm.expect(response).to.have.property(\"error\").that.equals(\"Кількість гравців є обов'язковим полем!\");",
+									"});",
+									"",
+									"pm.test(\"Відповідь у форматі JSON\", function () {",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"name": "cache-control",
+								"type": "text"
+							},
+							{
+								"key": "Postman-Token",
+								"value": "<calculated when request is sent>",
+								"name": "postman-token",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"name": "content-type",
+								"type": "text"
+							},
+							{
+								"key": "Content-Length",
+								"value": "<calculated when request is sent>",
+								"name": "content-length",
+								"type": "text"
+							},
+							{
+								"key": "Host",
+								"value": "<calculated when request is sent>",
+								"name": "host",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "PostmanRuntime/7.39.1",
+								"name": "user-agent",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*",
+								"name": "accept",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate, br",
+								"name": "accept-encoding",
+								"type": "text"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive",
+								"name": "connection",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/create-room",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"create-room"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Room Code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус відповіді - 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Успішне створення нової кімнати\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an(\"object\");",
+									"    pm.expect(response).to.have.property(\"message\").that.equals(\"Кімната успішно створена!\");",
+									"    pm.expect(response).to.have.property(\"room_code\").that.is.a(\"string\").and.has.length(6);",
+									"    pm.expect(response).to.have.property(\"room_id\").that.is.a(\"number\");",
+									"});",
+									"",
+									"pm.test(\"Код кімнати має правильний формат\", function () {",
+									"    const response = pm.response.json();",
+									"    const roomCode = response.room_code;",
+									"    pm.expect(roomCode).to.match(/^[A-Z0-9]{6}$/);",
+									"});",
+									"",
+									"pm.test(\"Збереження room_code у змінну\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set(\"room_code\", response.room_code);",
+									"    pm.expect(pm.environment.get(\"room_code\")).to.be.a(\"string\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"name": "cache-control",
+								"type": "text"
+							},
+							{
+								"key": "Postman-Token",
+								"value": "<calculated when request is sent>",
+								"name": "postman-token",
+								"type": "text"
+							},
+							{
+								"key": "Content-Length",
+								"value": "0",
+								"name": "content-length",
+								"type": "text"
+							},
+							{
+								"key": "Host",
+								"value": "<calculated when request is sent>",
+								"name": "host",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "PostmanRuntime/7.39.1",
+								"name": "user-agent",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*",
+								"name": "accept",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate, br",
+								"name": "accept-encoding",
+								"type": "text"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive",
+								"name": "connection",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"player_number\": 4\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/create-room",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"create-room"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Existing Room Code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус відповіді - 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Успішне оновлення існуючої кімнати\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an(\"object\");",
+									"    pm.expect(response).to.have.property(\"message\").that.equals(\"Кімната успішно оновлена!\");",
+									"    pm.expect(response).to.have.property(\"room_code\").that.is.a(\"string\").and.has.length(6);",
+									"});",
+									"",
+									"pm.test(\"Повернутий room_code відповідає запиту\", function () {",
+									"    const response = pm.response.json();",
+									"    const requestedRoomCode = pm.environment.get(\"room_code\");",
+									"    pm.expect(response.room_code).to.equal(requestedRoomCode);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"name": "cache-control",
+								"type": "text"
+							},
+							{
+								"key": "Postman-Token",
+								"value": "<calculated when request is sent>",
+								"name": "postman-token",
+								"type": "text"
+							},
+							{
+								"key": "Content-Length",
+								"value": "0",
+								"name": "content-length",
+								"type": "text"
+							},
+							{
+								"key": "Host",
+								"value": "<calculated when request is sent>",
+								"name": "host",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "PostmanRuntime/7.39.1",
+								"name": "user-agent",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*",
+								"name": "accept",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate, br",
+								"name": "accept-encoding",
+								"type": "text"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive",
+								"name": "connection",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"room_code\": \"{{room_code}}\",\n    \"player_number\": 5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/create-room",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"create-room"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "StoryControllerTests",
+			"item": [
+				{
+					"name": "Get Story Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус відповіді - 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Успішна відповідь має правильну структуру\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an(\"object\");",
+									"    pm.expect(response).to.have.property(\"id\").that.is.a(\"number\");",
+									"    pm.expect(response).to.have.property(\"historyTitle\");",
+									"});",
+									"",
+									"pm.test(\"Повернутий id відповідає запиту\", function () {",
+									"    const response = pm.response.json();",
+									"    const storyIdFromRequest = parseInt(pm.environment.get(\"storyId\") || pm.collectionVariables.get(\"storyId\") || \"1\");",
+									"    pm.expect(response.id).to.equal(storyIdFromRequest);",
+									"});",
+									"",
+									"pm.test(\"Час відповіді менший за 500ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/stories/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"stories",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Story Not Found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус 404, якщо історію не знайдено\", function () {",
+									"    pm.response.to.have.status(404);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property(\"error\").that.equals(\"Історію не знайдено.\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/stories/:storyId?storyId=9999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"stories",
+								":storyId"
+							],
+							"query": [
+								{
+									"key": "storyId",
+									"value": "9999"
+								}
+							],
+							"variable": [
+								{
+									"key": "storyId",
+									"value": "",
+									"type": "string"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
