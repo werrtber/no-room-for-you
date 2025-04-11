@@ -4,6 +4,7 @@ const http = require('http');
 const cors = require('cors');
 const path = require('path');
 const { Server } = require('socket.io');
+const db = require('./db/db');
 
 // 🔁 Ініціалізація Express + HTTP + Socket.IO
 const app = express();
@@ -15,78 +16,65 @@ const io = new Server(server, {
 });
 
 // 📦 Зберігаємо кімнати в пам'яті
-const rooms = {}; // { room_code: { players: [ { playerId, socketId } ] } }
+ // { room_code: { players: [ { playerId, socketId } ] } }
 
 io.on('connection', (socket) => {
   console.log('🟢 Socket підключено:', socket.id);
 
-  socket.on('joinRoom', ({ room_code, player_id }) => {
+  socket.on('joinRoom', async ({ room_code, player_id }) => {
     if (!room_code || !player_id) return;
+    const pool = db();
+    //socket.id = player_id;
+    // Логування отриманих даних
+    console.log('Отримані дані:', { room_code, player_id });
+    // Додавання гравця до кімнати
 
-    if (!rooms[room_code]) {
-      rooms[room_code] = {
-        players: []
-      };
+    let [rows] = await pool.execute('SELECT player_id, nickname FROM player JOIN room ON player.room_id = room.room_id WHERE room_code = ?', [room_code]);
+    console.log(rows);
+    const nicknames = rows.map(row => row.nickname);
+    for(let i = 0; i < rows.length; i++){
+      rows[i].position = i+1;
     }
+    //const room = rooms[room_code];
+    // const existingPlayer = room.players.find(p => p.playerId === player_id);
 
-    const room = rooms[room_code];
-
-    // Уникаємо повторів
-    if (!room.players.find(p => p.playerId === player_id)) {
-      room.players.push({ playerId: player_id, socketId: socket.id });
-    } else {
-      const p = room.players.find(p => p.playerId === player_id);
-      p.socketId = socket.id;
-    }
+    // if (!existingPlayer) {
+    //   room.players.push({ playerId: player_id, socketId: socket.id });
+    // } else {
+    //   existingPlayer.socketId = socket.id;
+    // }
 
     socket.join(room_code);
 
-    const position = room.players.findIndex(p => p.playerId === player_id) + 1;
-
+    const position = nicknames.length;
     console.log(`📦 Гравець ${player_id} зайшов у кімнату ${room_code} як позиція ${position}`);
 
+    // Відправлення відповіді клієнту
     socket.emit('roomJoined', {
       position,
-      playersInRoom: room.players.length
+      playersInRoom: nicknames
     });
 
-    sendRoomUpdate(room_code);
+    sendRoomUpdate(room_code, rows);
+
+    socket.on('disconnect', async ()=>{
+      await pool.execute('UPDATE player SET room_id = null WHERE player_id = ?', [player_id]);
+      [rows] = await pool.execute('SELECT player_id, nickname FROM player JOIN room ON player.room_id = room.room_id WHERE room_code = ?', [room_code]);
+      sendRoomUpdate(room_code, rows);
+    })
   });
-
-  socket.on('disconnect', () => {
-    console.log('🔌 Socket відключився:', socket.id);
-
-    for (const room_code in rooms) {
-      const room = rooms[room_code];
-      const index = room.players.findIndex(p => p.socketId === socket.id);
-      if (index !== -1) {
-        const player = room.players[index];
-        console.log(`❌ Гравець ${player.playerId} вийшов з кімнати ${room_code}`);
-        room.players.splice(index, 1);
-
-        if (room.players.length === 0) {
-          delete rooms[room_code];
-          console.log(`🗑️ Кімната ${room_code} очищена`);
-        } else {
-          sendRoomUpdate(room_code);
-        }
-        break;
-      }
-    }
-  });
+  
 });
 
 // Надсилання списку гравців
-function sendRoomUpdate(room_code) {
-  const room = rooms[room_code];
-  if (!room) return;
+function sendRoomUpdate(room_code, rows) {
 
-  const players = room.players.map(p => ({ playerId: p.playerId }));
-  io.to(room_code).emit('roomUpdate', { players });
+  //const players = room.players.map(p => ({ playerId: p.playerId }));
+  console.log({rows});
+  io.to(room_code).emit('roomUpdate', rows);
 }
 
 // ⛓️ Підключення БД
-const db = require('./db/db')();
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));

@@ -4,11 +4,13 @@ const socket = io('http://localhost:3000');
 const room_code = sessionStorage.getItem('room_code');
 const player_id = sessionStorage.getItem('player_id');
 const isHost = sessionStorage.getItem('is_host') === 'true';
-
+console.log(sessionStorage.getItem('room_code'));
+console.log(sessionStorage.getItem('player_id'));
 socket.on('connect', () => {
     console.log('🟢 Підключено до сервера. Socket ID:', socket.id);
 
     // Вхід у кімнату
+    console.log( sessionStorage.getItem('room_code'), player_id);
     socket.emit('joinRoom', { room_code, player_id });
 });
 
@@ -24,20 +26,32 @@ socket.on('roomJoined', ({ position, playersInRoom }) => {
         const startButton = document.querySelectorAll('.all-button button')[1];
         if (startButton) startButton.disabled = true;
     }
+    console.log('Гравці в кімнаті: ' + playersInRoom)
 });
 
 // Обробка оновлення списку гравців кімнати
-socket.on('roomUpdate', ({ players }) => {
+socket.on('roomUpdate', (players) => {
     // Очищуємо список гравців
+    // const ids = players.map(player => player.player_id);
+    // console.log('Players: ' + ids);
     playersList.innerHTML = "";
+    console.log('smth' + players);
     // Для кожного гравця встановлюємо позицію (індекс + 1)
-    players.forEach((player, idx) => {
-         const pos = idx + 1;
-         // Якщо потрібно – можна витягнути нікнейми із додаткових даних, тут поки що базово:
-         const name = (player.playerId === player_id) ? "Ви" : `Гравець ${pos}`;
-         const playerDiv = createPlayerElement(name, `player-${pos}`);
-         playersList.appendChild(playerDiv);
-    });
+    for(let i = 0; i < players.length; i++){
+        const player_id = players[i].player_id;
+        const nickname = players[i].nickname;
+        //const pos = players[i].position;
+        const name = (sessionStorage.getItem('player_id') === player_id) ? `Ви (${nickname})` : nickname;
+        const playerDiv = createPlayerElement(name, `player-${i+1}`);
+        playersList.appendChild(playerDiv);
+    }
+    // players.forEach((player_id, nickname, pos) => {
+    //      //const pos = idx + 1;
+    //      // Якщо потрібно – можна витягнути нікнейми із додаткових даних, тут поки що базово:
+    //      const name = (sessionStorage.getItem('player_id') === player_id) ? `Ви (${nickname})` : nickname;
+    //      const playerDiv = createPlayerElement(name, `player-${pos}`);
+    //      playersList.appendChild(playerDiv);
+    // });
 });
 
 // Використовувані DOM-елементи
@@ -147,30 +161,29 @@ function sendPlayerData(playerName, playerColor, numPlayers) {
 playerSelect.addEventListener('change', () => {
     const numPlayers = parseInt(playerSelect.value);
     if (isHost) {
-        if (!room_code) {
-            createRoom(numPlayers);
-          } else {
-            updateRoom(numPlayers, room_code);
-          }
+
+            updateRoom(numPlayers, sessionStorage.getItem('room_code'));
+          
           
     }
 });
 
 // При завантаженні сторінки запускається початкове формування списку (для хоста)
 document.addEventListener("DOMContentLoaded", function () {
-    const defaultNumPlayers = 6;
-    playerSelect.value = defaultNumPlayers;
-
-    if (isHost) {
-        if (!room_code) {
-            createRoom(defaultNumPlayers);
-          } else {
-            updateRoom(defaultNumPlayers, room_code);
-          }
+    
+    const room_code = sessionStorage.getItem('room_code');
+    console.log(room_code);
+    // if (isHost) {
+    //     if (!room_code) {
+           
+    //       } else {
+    //         updateRoom(defaultNumPlayers, room_code);
+    //       }
           
-    }
+    // }
 
     const player_id = sessionStorage.getItem('player_id');
+    console.log(player_id);
     fetch(`http://localhost:3000/api/get-nickname/${player_id}`)
         .then(response => response.json())
         .then(data => {
@@ -224,37 +237,10 @@ document.querySelector('.button2').addEventListener('click', function() {
 });
 
 // Функція createOrUpdateRoom викликається лише для хоста
-async function createRoom(playerNumber) {
-    try {
-      const response = await fetch('http://localhost:3000/api/create-room', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          player_number: playerNumber
-        }),
-      });
-  
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`HTTP error! Status: ${response.status} - ${errorData.error}`);
-      }
-  
-      const data = await response.json();
-      console.log('✅ Кімнату створено:', data);
-  
-      if (data.room_code) {
-        sessionStorage.setItem('room_code', data.room_code);
-      }
-    } catch (error) {
-      console.error('❌ Помилка створення кімнати:', error.message || error);
-    }
-  }
+
   async function updateRoom(playerNumber, roomCode) {
     try {
-      const response = await fetch('http://localhost:3000/api/create-room', {
+      const response = await fetch('http://localhost:3000/api/update-room', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -274,9 +260,9 @@ async function createRoom(playerNumber) {
       const data = await response.json();
       console.log('🔄 Кімнату оновлено:', data);
   
-      if (data.room_code) {
-        sessionStorage.setItem('room_code', data.room_code);
-      }
+    //   if (data.room_code) {
+    //     sessionStorage.setItem('room_code', data.room_code);
+    //   }
     } catch (error) {
       console.error('❌ Помилка оновлення кімнати:', error.message || error);
     }
