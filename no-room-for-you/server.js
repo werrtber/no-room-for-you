@@ -17,7 +17,27 @@ const io = new Server(server, {
 
 io.on('connection', (socket) => {
   console.log('🟢 Socket підключено:', socket.id);
+  // Коли хост перегортає історії
+  
+  // Коли хост перегортає історії
+  socket.on('changeStory', ({ room_code, story_id }) => {
+    console.log(`📚 Хост змінив історію: ${story_id} в кімнаті ${room_code}`);
+    // Важливо: транслюємо всім в кімнаті, включно з хостом
+    socket.to(room_code).emit('updateStory', { story_id });
+  });
 
+  // Коли хост обирає історію
+  socket.on('chooseStory', ({ room_code, story_id }) => {
+    console.log(`✅ Хост обрав історію: ${story_id} в кімнаті ${room_code}`);
+    // Важливо: транслюємо всім в кімнаті, включно з хостом
+    socket.to(room_code).emit('storyChosen');
+  });
+
+// Обробка події startGame
+socket.on('startGame', ({ room_code }) => {
+  console.log(`🎮 Гра почалася в кімнаті: ${room_code}`);
+  io.to(room_code).emit('redirectPlayers'); // Повідомляємо всіх гравців про перенаправлення
+});
   socket.on('joinRoom', async ({ room_code, player_id }) => {
     if (!room_code || !player_id) return;
     const pool = db();
