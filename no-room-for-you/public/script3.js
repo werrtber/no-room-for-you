@@ -130,3 +130,30 @@ socket.on('playerCountResponse', ({ playerCount }) => {
     // Якщо всі умови виконані, перенаправляємо на наступну сторінку
     window.location.href = 'fourth-page.html';
 });
+
+// Логіка копіювання запрошення
+document.querySelector('.button2').addEventListener('click', function () {
+    const roomCode = sessionStorage.getItem('room_code'); // Отримуємо код кімнати
+    if (!roomCode) {
+        alert('Код кімнати не знайдено!');
+        return;
+    }
+
+    // Створюємо тимчасовий елемент для копіювання
+    const tempInput = document.createElement('input');
+    document.body.appendChild(tempInput);
+    tempInput.value = roomCode; // Копіюємо саме код кімнати
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+
+    // Змінюємо повідомлення на "Код кімнати успішно скопійовано!"
+    const message = document.getElementById('copyMessage');
+    message.textContent = 'Код кімнати успішно скопійовано!';
+    message.style.display = 'block';
+
+    // Приховуємо повідомлення через 2 секунди
+    setTimeout(function () {
+        message.style.display = 'none';
+    }, 2000);
+});
