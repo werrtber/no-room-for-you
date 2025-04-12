@@ -30,9 +30,8 @@ socket.on('roomUpdate', ({ players, usedColors }) => {
 function updatePlayersUI(players) {
     const playersList = document.getElementById('players-list');
     playersList.innerHTML = '';
-
     players.forEach(player => {
-        const playerName = player.playerId === player_id ? `Ви (${player.nickname})` : player.nickname;
+        const playerName = player.playerId == player_id ? `${player.nickname} (Ви)` : player.nickname;
         const playerDiv = createPlayerElement(playerName, `player-${player.playerId}`, player.color);
         playersList.appendChild(playerDiv);
     });

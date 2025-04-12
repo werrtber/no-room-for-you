@@ -43,7 +43,7 @@ io.on('connection', (socket) => {
     // Відправлення відповіді клієнту
     socket.emit('roomJoined', {
       position,
-      playersInRoom: rows.map(p => ({ nickname: p.nickname, color: p.color }))
+      playersInRoom: rows.map(p => ({ playerId: p.player_id, nickname: p.nickname, color: p.color }))
     });
 
     sendRoomUpdate(room_code, rows);
