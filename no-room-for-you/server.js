@@ -15,34 +15,25 @@ const io = new Server(server, {
   }
 });
 
-// 📦 Зберігаємо кімнати в пам'яті
- // { room_code: { players: [ { playerId, socketId } ] } }
-
 io.on('connection', (socket) => {
   console.log('🟢 Socket підключено:', socket.id);
 
   socket.on('joinRoom', async ({ room_code, player_id }) => {
     if (!room_code || !player_id) return;
     const pool = db();
-    //socket.id = player_id;
+
     // Логування отриманих даних
     console.log('Отримані дані:', { room_code, player_id });
-    // Додавання гравця до кімнати
 
-    let [rows] = await pool.execute('SELECT player_id, nickname FROM player JOIN room ON player.room_id = room.room_id WHERE room_code = ?', [room_code]);
+    let [rows] = await pool.execute(
+      'SELECT player_id, nickname, color FROM player JOIN room ON player.room_id = room.room_id WHERE room_code = ?',
+      [room_code]
+    );
     console.log(rows);
     const nicknames = rows.map(row => row.nickname);
-    for(let i = 0; i < rows.length; i++){
-      rows[i].position = i+1;
+    for (let i = 0; i < rows.length; i++) {
+      rows[i].position = i + 1;
     }
-    //const room = rooms[room_code];
-    // const existingPlayer = room.players.find(p => p.playerId === player_id);
-
-    // if (!existingPlayer) {
-    //   room.players.push({ playerId: player_id, socketId: socket.id });
-    // } else {
-    //   existingPlayer.socketId = socket.id;
-    // }
 
     socket.join(room_code);
 
@@ -52,26 +43,41 @@ io.on('connection', (socket) => {
     // Відправлення відповіді клієнту
     socket.emit('roomJoined', {
       position,
-      playersInRoom: nicknames
+      playersInRoom: rows.map(p => ({ nickname: p.nickname, color: p.color }))
     });
 
     sendRoomUpdate(room_code, rows);
 
-    socket.on('disconnect', async ()=>{
-      await pool.execute('UPDATE player SET room_id = null WHERE player_id = ?', [player_id]);
-      [rows] = await pool.execute('SELECT player_id, nickname FROM player JOIN room ON player.room_id = room.room_id WHERE room_code = ?', [room_code]);
+    // Обробка вибору кольору
+    socket.on('colorChange', async ({ color, playerId }) => {
+      await pool.execute('UPDATE player SET color = ? WHERE player_id = ?', [color, playerId]);
+      [rows] = await pool.execute(
+        'SELECT player_id, nickname, color FROM player JOIN room ON player.room_id = room.room_id WHERE room_code = ?',
+        [room_code]
+      );
       sendRoomUpdate(room_code, rows);
-    })
+    });
+
+    // Обробка відключення
+    socket.on('disconnect', async () => {
+      await pool.execute('UPDATE player SET room_id = null WHERE player_id = ?', [player_id]);
+      [rows] = await pool.execute(
+        'SELECT player_id, nickname, color FROM player JOIN room ON player.room_id = room.room_id WHERE room_code = ?',
+        [room_code]
+      );
+      sendRoomUpdate(room_code, rows);
+    });
   });
-  
 });
 
 // Надсилання списку гравців
 function sendRoomUpdate(room_code, rows) {
-
-  //const players = room.players.map(p => ({ playerId: p.playerId }));
-  console.log({rows});
-  io.to(room_code).emit('roomUpdate', rows);
+  const usedColors = rows.filter(p => p.color).map(p => p.color);
+  console.log(usedColors); // Отримуємо список зайнятих кольорів
+  io.to(room_code).emit('roomUpdate', {
+    players: rows.map(p => ({ playerId: p.player_id, nickname: p.nickname, color: p.color })),
+    usedColors // Передаємо список зайнятих кольорів
+  });
 }
 
 // ⛓️ Підключення БД
