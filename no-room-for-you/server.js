@@ -22,27 +22,21 @@ io.on('connection', (socket) => {
     if (!room_code || !player_id) return;
     const pool = db();
 
-    // Логування отриманих даних
-    console.log('Отримані дані:', { room_code, player_id });
-
     let [rows] = await pool.execute(
       'SELECT player_id, nickname, color FROM player JOIN room ON player.room_id = room.room_id WHERE room_code = ?',
       [room_code]
     );
-    console.log(rows);
-    const nicknames = rows.map(row => row.nickname);
-    for (let i = 0; i < rows.length; i++) {
-      rows[i].position = i + 1;
-    }
+
+    const position = rows.length;
+    const isHost = position === 1;
 
     socket.join(room_code);
 
-    const position = nicknames.length;
     console.log(`📦 Гравець ${player_id} зайшов у кімнату ${room_code} як позиція ${position}`);
 
-    // Відправлення відповіді клієнту
     socket.emit('roomJoined', {
       position,
+      isHost,
       playersInRoom: rows.map(p => ({ playerId: p.player_id, nickname: p.nickname, color: p.color }))
     });
 
@@ -56,6 +50,16 @@ io.on('connection', (socket) => {
         [room_code]
       );
       sendRoomUpdate(room_code, rows);
+    });
+
+    // Обробка перевірки кількості гравців
+    socket.on('checkPlayerCount', async ({ room_code }) => {
+      const [players] = await pool.execute(
+        'SELECT COUNT(*) AS count FROM player JOIN room ON player.room_id = room.room_id WHERE room_code = ?',
+        [room_code]
+      );
+      const playerCount = players[0].count;
+      socket.emit('playerCountResponse', { playerCount });
     });
 
     // Обробка відключення

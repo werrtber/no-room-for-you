@@ -105,3 +105,28 @@ function updateColorButtons(usedColors) {
         }
     });
 }
+
+// Отримуємо кнопку "Початок гри"
+const startGameButton = document.getElementById('startGameButton');
+
+// Обробник події для кнопки "Початок гри"
+startGameButton.addEventListener('click', () => {
+    if (!isHost) {
+        alert('Лише хост може починати гру!');
+        return;
+    }
+
+    // Перевіряємо кількість гравців
+    socket.emit('checkPlayerCount', { room_code });
+});
+
+// Обробка відповіді від сервера про кількість гравців
+socket.on('playerCountResponse', ({ playerCount }) => {
+    if (playerCount < 1) {
+        alert('Гра може починатися лише при 6 або більше гравцях!');
+        return;
+    }
+
+    // Якщо всі умови виконані, перенаправляємо на наступну сторінку
+    window.location.href = 'fourth-page.html';
+});
