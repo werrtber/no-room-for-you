@@ -100,13 +100,13 @@ window.addEventListener('DOMContentLoaded', async function () {
                      <h3>${player.nickname}</h3>
                 </div>
                 <ul class="player-info player-info-other">
-                    <li>Стать: <span>${player.gender} (${player.childfreeStatus})</span></li>
-                    <li>Вік: <span>${player.age}</span></li>
-                    <li>Професія: <span>${player.profession}</span></li>
-                    <li>Стан здоров'я: <span>${player.health}</span></li>
-                    <li>Навички: <span>${player.skill}</span></li>
-                    <li>Предмети в рюкзаку: <span>${player.backpack}</span></li>
-                    <li>Вади: <span>${player.flaw}</span></li>
+                    <li><label>Стать: <span>${player.gender} (${player.childfreeStatus})</span></label></li>
+                    <li><label>Вік: <span>${player.age}</span></label></li>
+                    <li><label>Професія: <span>${player.profession}</span></label></li>
+                    <li><label>Стан здоров'я: <span>${player.health}</span></label></li>
+                    <li><label>Навички: <span>${player.skill}</span></label></li>
+                    <li><label>Предмети в рюкзаку: <span>${player.backpack}</span></label></li>
+                    <li><label>Вади: <span>${player.flaw}</span></label></li>
                 </ul>
             </div>
         </div>`;

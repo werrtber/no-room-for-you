@@ -277,8 +277,8 @@ body {
     background: #BA5B84;
     border-radius: 20px;
     padding: 30px 20px;
-    width: 320px;
-    max-width: 90vw;
+    width: 380px;
+    max-width: 100vw;
     height: 55vh;
     text-align: center;
     color: white;
@@ -360,12 +360,17 @@ body {
 }
 
 .confirm-btn {
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
     background-color: #441D3A;
     color: white;
     border: none;
     padding: 10px 20px;
     font-size: 16px;
     border-radius: 8px;
+    font-weight: 600;
     cursor: pointer;
     margin-top: 15px;
     width: 100%;
