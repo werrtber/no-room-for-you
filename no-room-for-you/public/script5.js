@@ -46,7 +46,7 @@ window.addEventListener('DOMContentLoaded', async function () {
     });
     // Оновлюємо модальне вікно користувача з даними з БД
     const playerModalHtml = `
-    <div class="modal" id="playerModal">
+    <div class="modal" id="playerModal" data-player-id="${dbData.playerInfo.player_id}">
         <div class="modal-inner">
             <button class="modal-close" id="closeModal">✖</button>
             <h2 class="kartka">КАРТКА:</h2>
@@ -55,63 +55,62 @@ window.addEventListener('DOMContentLoaded', async function () {
             </div>
             <ul class="player-info">
                 <li>
-                                          <input type="radio" id="gender" name="playerInfo">
-                     <label for="gender" class="yellow">Стать: <span>${dbData.playerInfo.gender} (${dbData.playerInfo.childfreeStatus})</span></label>
-                 </li>
-                 <li>
-                     <input type="radio" id="age" name="playerInfo">
-                     <label for="age">Вік: <span>${dbData.playerInfo.age}</span></label>
-                 </li>
-                 <li>
-                     <input type="radio" id="profession" name="playerInfo">
-                     <label for="profession">Професія: <span>${dbData.playerInfo.profession}</span></label>
-                 </li>
-                 <li>
-                     <input type="radio" id="health" name="playerInfo">
-                     <label for="health">Стан здоров'я: <span>${dbData.playerInfo.health}</span></label>
-                 </li>
-                 <li>
-                     <input type="radio" id="skills" name="playerInfo">
-                     <label for="skills">Навички: <span>${dbData.playerInfo.skill}</span></label>
-                 </li>
-                 <li>
-                     <input type="radio" id="items" name="playerInfo">
-                     <label for="items">Предмети в рюкзаку: <span>${dbData.playerInfo.backpack}</span></label>
-                 </li>
-                 <li>
-                     <input type="radio" id="flaws" name="playerInfo">
-                     <label for="flaws">Вади: <span>${dbData.playerInfo.flaw}</span></label>
-                 </li>
+                    <input type="radio" id="gender" name="playerInfo">
+                    <label for="gender" class="yellow">Стать: <span>${dbData.playerInfo.gender} (${dbData.playerInfo.childfreeStatus})</span></label>
+                </li>
+                <li>
+                    <input type="radio" id="age" name="playerInfo">
+                    <label for="age">Вік: <span>${dbData.playerInfo.age}</span></label>
+                </li>
+                <li>
+                    <input type="radio" id="profession" name="playerInfo">
+                    <label for="profession" data-attribute-id="profession">Професія: <span>${dbData.playerInfo.profession}</span></label>
+                </li>
+                <li>
+                    <input type="radio" id="health" name="playerInfo">
+                    <label for="health">Стан здоров'я: <span>${dbData.playerInfo.health}</span></label>
+                </li>
+                <li>
+                    <input type="radio" id="skills" name="playerInfo">
+                    <label for="skills">Навички: <span>${dbData.playerInfo.skill}</span></label>
+                </li>
+                <li>
+                    <input type="radio" id="items" name="playerInfo">
+                    <label for="items">Предмети в рюкзаку: <span>${dbData.playerInfo.backpack}</span></label>
+                </li>
+                <li>
+                    <input type="radio" id="flaws" name="playerInfo">
+                    <label for="flaws">Вади: <span>${dbData.playerInfo.flaw}</span></label>
+                </li>
             </ul>
             <button id="confirmSelection" class="confirm-btn">Підтвердити</button>
         </div>
     </div>`;
-    modalContainer.innerHTML = playerModalHtml;
+modalContainer.innerHTML = playerModalHtml;
 
-    // Генеруємо HTML для модальних вікон інших гравців
-    let modalsHtml = '';
-    dbData.otherPlayers.forEach((player, index) => {
-        modalsHtml += `
-        <div class="modal" id="playerModal${index + 1}">
-            <div class="modal-inner">
-                <button class="modal-close" id="closeModal${index + 1}">✖</button>
-                <h2 class="kartka">КАРТКА:</h2>
-                <div class="player-header-container">
-                     <h3>${player.nickname}</h3>
-                </div>
-                <ul class="player-info player-info-other">
-                    <li><label>Стать: <span>${player.gender} (${player.childfreeStatus})</span></label></li>
-                    <li><label>Вік: <span>${player.age}</span></label></li>
-                    <li><label>Професія: <span>${player.profession}</span></label></li>
-                    <li><label>Стан здоров'я: <span>${player.health}</span></label></li>
-                    <li><label>Навички: <span>${player.skill}</span></label></li>
-                    <li><label>Предмети в рюкзаку: <span>${player.backpack}</span></label></li>
-                    <li><label>Вади: <span>${player.flaw}</span></label></li>
-                </ul>
+let modalsHtml = '';
+dbData.otherPlayers.forEach((player, index) => {
+    modalsHtml += `
+    <div class="modal" id="playerModal${index + 1}" data-player-id="${player.player_id}">
+        <div class="modal-inner">
+            <button class="modal-close" id="closeModal${index + 1}">✖</button>
+            <h2 class="kartka">КАРТКА:</h2>
+            <div class="player-header-container">
+                <h3>${player.nickname}</h3>
             </div>
-        </div>`;
-    });
-    modalContainer.innerHTML += modalsHtml;
+            <ul class="player-info player-info-other">
+                <li><label data-attribute-id="gender">Стать: <span class="hidden-attribute">${player.gender} (${player.childfreeStatus})</span></label></li>
+                <li><label data-attribute-id="age">Вік: <span class="hidden-attribute">${player.age}</span></label></li>
+                <li><label data-attribute-id="profession">Професія: <span class="hidden-attribute">${player.profession}</span></label></li>
+                <li><label data-attribute-id="health">Стан здоров'я: <span class="hidden-attribute">${player.health}</span></label></li>
+                <li><label data-attribute-id="skills">Навички: <span class="hidden-attribute">${player.skill}</span></label></li>
+                <li><label data-attribute-id="items">Предмети в рюкзаку: <span class="hidden-attribute">${player.backpack}</span></label></li>
+                <li><label data-attribute-id="flaws">Вади: <span class="hidden-attribute">${player.flaw}</span></label></li>
+            </ul>
+        </div>
+    </div>`;
+});
+modalContainer.innerHTML += modalsHtml;
 
     // Конфігурація для розміщення гравців на сторінці
     const positions = {
@@ -295,4 +294,148 @@ const startVoteButton = document.getElementById('startVoteButton');
     closeBtnRules.addEventListener("click", () => {
         modalRules.classList.remove("open");
     });
+    // 1. Спершу перевіримо, чи правильно працює сокет-з'єднання
+const socket = io(); 
+
+// Додаємо явну перевірку встановлення з'єднання
+socket.on('connect', function() {
+    console.log('Сокет підключено успішно. ID сокета:', socket.id);
+    
+    // Приєднуємось до кімнати відразу після підключення
+    const roomCode = sessionStorage.getItem('room_code');
+    if (roomCode) {
+        socket.emit('joinGameRoom', { room_code: roomCode });
+        console.log('Відправлено запит на приєднання до кімнати:', roomCode);
+    }
 });
+
+socket.on('disconnect', function() {
+    console.log('Сокет відключено');
+});
+
+socket.on('error', function(error) {
+    console.error('Помилка сокета:', error);
+});
+
+// 2. Створюємо нову подію для тестування сокетів
+function testSocketConnection() {
+    const roomCode = sessionStorage.getItem('room_code');
+    if (roomCode) {
+        socket.emit('testConnection', { message: "Тестове повідомлення", room_code: roomCode });
+        console.log('Відправлено тестове повідомлення до кімнати:', roomCode);
+    }
+}
+
+// Обробник тестового повідомлення
+socket.on('testResponse', function(data) {
+    console.log('Отримано відповідь на тестове повідомлення:', data);
+});
+
+// 3. Спрощуємо і покращуємо обробник радіокнопок
+document.querySelectorAll('#playerModal input[type="radio"]').forEach(radio => {
+    radio.addEventListener('click', async () => {
+        const playerId = sessionStorage.getItem('player_id');
+        const attributeId = radio.id; // ID атрибута (наприклад, "age", "profession")
+        const roomCode = sessionStorage.getItem('room_code');
+        const playerNickname = document.querySelector('#playerModal h3').textContent || 'ВИ';
+        
+        if (!playerId || !roomCode) {
+            console.error('Відсутні дані для надсилання оновлення.', {
+                playerId, attributeId, roomCode
+            });
+            return;
+        }
+        
+        console.log(`Відправляємо відкриття атрибуту: ${attributeId} для гравця ${playerId} (${playerNickname})`);
+        
+        // Робимо атрибут видимим для себе
+        const selfModal = document.getElementById('playerModal');
+        const selfModalLabel = selfModal.querySelector(`label[for="${attributeId}"]`);
+        if (selfModalLabel) {
+            const span = selfModalLabel.querySelector('span');
+            if (span) {
+                span.style.opacity = '1';
+                console.log('Зроблено видимим атрибут для себе');
+            }
+        }
+        
+        // Додаємо більше інформації в повідомлення
+        socket.emit('revealAttribute', { 
+            playerId, 
+            attributeId, 
+            roomCode,
+            playerNickname,
+            attributeValue: selfModalLabel ? selfModalLabel.querySelector('span').textContent : 'Невідомо'
+        });
+    });
+});
+
+// 4. Повністю перероблений обробник події оновлення атрибутів
+socket.on('updateAttributeVisibility', function(data) {
+    console.log('Отримано оновлення видимості атрибута:', data);
+    
+    const { playerId, attributeId, playerNickname, attributeValue } = data;
+    
+    // МЕТОД 1: Пошук за data-player-id
+    document.querySelectorAll('.modal[data-player-id]').forEach(modal => {
+        if (modal.getAttribute('data-player-id') === playerId.toString()) {
+            console.log(`Знайдено модальне вікно для гравця ${playerId}`);
+            
+            // Шукаємо мітку з атрибутом
+            const label = modal.querySelector(`label[data-attribute-id="${attributeId}"]`);
+            if (label) {
+                console.log(`Знайдено мітку для атрибута ${attributeId}`);
+                const span = label.querySelector('span');
+                if (span) {
+                    // Застосовуємо кілька підходів
+                    span.style.opacity = '1';
+                    span.style.visibility = 'visible';
+                    span.style.display = 'inline';
+                    console.log(`Зроблено видимим атрибут ${attributeId} для гравця ${playerId}`);
+                }
+            }
+        }
+    });
+    
+    // МЕТОД 2: Пошук за ID модального вікна
+    // Якщо йдеться про інших гравців, шукаємо модальні вікна за шаблоном playerModal1, playerModal2, ...
+    for (let i = 1; i <= 12; i++) {
+        const modal = document.getElementById(`playerModal${i}`);
+        if (modal && modal.getAttribute('data-player-id') === playerId.toString()) {
+            console.log(`Знайдено модальне вікно ${i} для гравця ${playerId}`);
+            
+            const label = modal.querySelector(`label[data-attribute-id="${attributeId}"]`);
+            if (label) {
+                const span = label.querySelector('span');
+                if (span) {
+                    span.style.opacity = '1';
+                    span.style.visibility = 'visible';
+                    span.style.display = 'inline';
+                    console.log(`Метод 2: Зроблено видимим атрибут ${attributeId} для гравця ${playerId}`);
+                }
+            }
+        }
+    }
+    
+    // МЕТОД 3: Радикальний - оновлення всіх span, що належать до цього атрибута
+    document.querySelectorAll(`label[data-attribute-id="${attributeId}"] span`).forEach(span => {
+        span.style.opacity = '1';
+        span.style.visibility = 'visible';
+        span.style.display = 'inline';
+        console.log(`Метод 3: Оновлено всі span для атрибута ${attributeId}`);
+    });
+    
+    // МЕТОД 4: Оголошення у вигляді повідомлення для користувача
+    const notification = document.createElement('div');
+    notification.className = 'attribute-notification';
+    notification.textContent = `Гравець ${playerNickname || playerId} відкрив характеристику: ${attributeId}`;
+    notification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #ffeb3b; color: #000; padding: 10px; border-radius: 5px; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2);';
+    document.body.appendChild(notification);
+    
+    // Видаляємо повідомлення через 5 секунд
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+});
+});
+// Додаємо обробник для радіобатонів

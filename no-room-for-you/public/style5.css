@@ -684,6 +684,19 @@ body {
     background: none; /* Забирає фонове забарвлення */
     border: none;
   }
+
+  .player-info-other span{
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+ .hidden-attribute {
+       opacity: 0;
+       transition: opacity 0.3s ease;
+   }
+  .visible-attribute {
+      opacity: 1 !important;
+       transition: opacity 0.3s ease;
+   }
   /* .main{
     flex-direction: row;
   } */
