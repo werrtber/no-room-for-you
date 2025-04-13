@@ -60,8 +60,8 @@ exports.getPlayerData = async (req, res) => {
         let mainCard = generateCardWithBackpack(professions, skills, healthConditions, flaws, backpackItems);
         mainPlayer.job_id = mainCard.profession.job_id;
         mainPlayer.hobby_id = mainCard.skill.hobby_id;
-        mainPlayer.health_id = mainCard.health.health_id;
-        mainPlayer.vada_id = mainCard.flaw || mainCard.flaw_vada_id;
+        mainPlayer.health_id = mainCard.health.health_id || mainCard.health;
+        mainPlayer.vada_id = mainCard.flaw.vada_id || mainCard.flaw;
         mainPlayer.items_id = (mainCard.backpack.map((item)=>item.items_id)).join(',');
         mainPlayer.age = mainCard.age;
         mainPlayer.gender = mainCard.gender;
