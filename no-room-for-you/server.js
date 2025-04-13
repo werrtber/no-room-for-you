@@ -84,10 +84,10 @@ socket.on('startGame', ({ room_code }) => {
 
     // Обробка відключення
     socket.on('disconnect', async () => {
-      await pool.execute('UPDATE player SET room_id = null WHERE player_id = ?', [player_id]);
+      //await pool.execute('UPDATE player SET room_id = null WHERE player_id = ?', [player_id]);
       [rows] = await pool.execute(
-        'SELECT player_id, nickname, color FROM player JOIN room ON player.room_id = room.room_id WHERE room_code = ?',
-        [room_code]
+        'SELECT player_id, nickname, color FROM player JOIN room ON player.room_id = room.room_id WHERE room_code = ? EXCEPT (SELECT player_id, nickname, color FROM player WHERE player_id = ?)',
+        [room_code, player_id]
       );
       sendRoomUpdate(room_code, rows);
     });
