@@ -137,6 +137,8 @@ exports.getPlayerData = async (req, res) => {
             ]
         );
 
+        const [playerColor] = await pool.execute('SELECT color FROM player WHERE player_id = ?', [player_id]);
+
         // Отримуємо дані з пов'язаних таблиць для головного гравця
         if (mainPlayer.job_id) {
             const [jobRow] = await pool.execute('SELECT job FROM job WHERE job_id = ?', [mainPlayer.job_id]);
@@ -252,6 +254,7 @@ exports.getPlayerData = async (req, res) => {
         }
 
         // Повертаємо дані
+        mainCard.color = playerColor[0].color;
         return res.status(200).json({
             numPlayers,
             playerInfo: mainCard,

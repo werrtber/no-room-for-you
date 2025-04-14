@@ -47,7 +47,7 @@ window.addEventListener('DOMContentLoaded', async function () {
     // Оновлюємо модальне вікно користувача з даними з БД
     const playerModalHtml = `
     <div class="modal" id="playerModal" data-player-id="${dbData.playerInfo.player_id}">
-          <div class="modal-inner">
+          <div class="modal-inner" style="box-shadow: 0 0 20px ${dbData.playerInfo.color || "white"};">
             <button class="modal-close" id="closeModal">✖</button>
             <h2 class="kartka">КАРТКА:</h2>
             <div class="player-header-container">
@@ -94,7 +94,7 @@ let modalsHtml = '';
 dbData.otherPlayers.forEach((player, index) => {
     modalsHtml += `
     <div class="modal" id="playerModal${index + 1}" data-player-id="${player.player_id}">
-         <div class="modal-inner">
+         <div class="modal-inner" style="box-shadow: 0 0 20px ${player.color || "white"};">
             <button class="modal-close" id="closeModal${index + 1}">✖</button>
             <h2 class="kartka">КАРТКА:</h2>
             <div class="player-header-container">
