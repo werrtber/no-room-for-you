@@ -294,7 +294,7 @@ body {
     text-align: center;
     color: white;
     position: relative;
-    box-shadow: 0 0 10px rgba(212, 209, 14, 1);
+    box-shadow: 0 0 10px white;
 }
 
 .modal-close {
