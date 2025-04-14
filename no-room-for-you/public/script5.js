@@ -47,7 +47,7 @@ window.addEventListener('DOMContentLoaded', async function () {
     // Оновлюємо модальне вікно користувача з даними з БД
     const playerModalHtml = `
     <div class="modal" id="playerModal" data-player-id="${dbData.playerInfo.player_id}">
-        <div class="modal-inner">
+          <div class="modal-inner">
             <button class="modal-close" id="closeModal">✖</button>
             <h2 class="kartka">КАРТКА:</h2>
             <div class="player-header-container">
@@ -94,7 +94,7 @@ let modalsHtml = '';
 dbData.otherPlayers.forEach((player, index) => {
     modalsHtml += `
     <div class="modal" id="playerModal${index + 1}" data-player-id="${player.player_id}">
-        <div class="modal-inner">
+         <div class="modal-inner">
             <button class="modal-close" id="closeModal${index + 1}">✖</button>
             <h2 class="kartka">КАРТКА:</h2>
             <div class="player-header-container">
@@ -135,7 +135,10 @@ modalContainer.innerHTML += modalsHtml;
     html += '<div class="up-players">';
     for (let i = 1; i <= config.top; i++) {
         const player = dbData.otherPlayers[i - 1];
-         html += `<div class="player-up"><button class="player-circle" id="player${i}"></button><span class="player-name">${player?.nickname || 'Гравець ' + i}</span></div>`;
+        html += `<div class="player-up">
+        <button class="player-circle" id="player${i}" style="background-color: ${player?.color || '#FFFFFF'};"></button>
+        <span class="player-name">${player?.nickname || 'Гравець ' + i}</span>
+    </div>`;
     }
     html += '</div>';
     html += '</div>';

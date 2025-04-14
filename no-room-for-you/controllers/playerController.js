@@ -192,7 +192,8 @@ exports.getPlayerData = async (req, res) => {
             skill: player.skill,
             health: player.health,
             flaw: player.flaw,
-            backpack: player.backpack ? player.backpack.split(',') : []
+            backpack: player.backpack ? player.backpack.split(',') : [],
+            color: player.color
         }));
 
         // Якщо кількість інших гравців менша за необхідну, генеруємо нових
