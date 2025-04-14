@@ -74,9 +74,11 @@ window.addEventListener('DOMContentLoaded', async function () {
                     <input type="radio" id="skills" name="playerInfo">
                     <label for="skills">Навички: <span>${dbData.playerInfo.skill}</span></label>
                 </li>
-                <li>
-                    <input type="radio" id="items" name="playerInfo">
-                    <label for="items">Предмети в рюкзаку: <span>${dbData.playerInfo.backpack}</span></label>
+               <li>
+                 <input type="radio" id="items" name="playerInfo">
+                <label for="items">Предмети в рюкзаку: 
+                 <span>${Array.isArray(dbData.playerInfo.backpack) ? dbData.playerInfo.backpack.join(', ') : dbData.playerInfo.backpack}</span>
+                </label>
                 </li>
                 <li>
                     <input type="radio" id="flaws" name="playerInfo">
@@ -104,7 +106,7 @@ dbData.otherPlayers.forEach((player, index) => {
                 <li><label data-attribute-id="profession">Професія: <span class="hidden-attribute">${player.profession}</span></label></li>
                 <li><label data-attribute-id="health">Стан здоров'я: <span class="hidden-attribute">${player.health}</span></label></li>
                 <li><label data-attribute-id="skills">Навички: <span class="hidden-attribute">${player.skill}</span></label></li>
-                <li><label data-attribute-id="items">Предмети в рюкзаку: <span class="hidden-attribute">${player.backpack}</span></label></li>
+               <li><label data-attribute-id="items">Предмети в рюкзаку: <span class="hidden-attribute">${Array.isArray(player.backpack) ? player.backpack.join(', ') : player.backpack}</span></label></li>
                 <li><label data-attribute-id="flaws">Вади: <span class="hidden-attribute">${player.flaw}</span></label></li>
             </ul>
         </div>
@@ -338,104 +340,89 @@ document.querySelectorAll('#playerModal input[type="radio"]').forEach(radio => {
         const attributeId = radio.id; // ID атрибута (наприклад, "age", "profession")
         const roomCode = sessionStorage.getItem('room_code');
         const playerNickname = document.querySelector('#playerModal h3').textContent || 'ВИ';
-        
+
         if (!playerId || !roomCode) {
-            console.error('Відсутні дані для надсилання оновлення.', {
-                playerId, attributeId, roomCode
-            });
+            console.error('Відсутні дані для надсилання оновлення.', { playerId, attributeId, roomCode });
             return;
         }
-        
-        console.log(`Відправляємо відкриття атрибуту: ${attributeId} для гравця ${playerId} (${playerNickname})`);
-        
-        // Робимо атрибут видимим для себе
+
+        // Знаходимо мітку з атрибутом
         const selfModal = document.getElementById('playerModal');
         const selfModalLabel = selfModal.querySelector(`label[for="${attributeId}"]`);
-        if (selfModalLabel) {
-            const span = selfModalLabel.querySelector('span');
-            if (span) {
-                span.style.opacity = '1';
-                console.log('Зроблено видимим атрибут для себе');
-            }
+        if (!selfModalLabel) {
+            console.error(`Мітка для атрибута ${attributeId} не знайдена.`);
+            return;
         }
-        
-        // Додаємо більше інформації в повідомлення
+
+        const span = selfModalLabel.querySelector('span');
+        if (!span) {
+            console.error(`Span для атрибута ${attributeId} не знайдений.`);
+            return;
+        }
+
+        const attributeValue = span.textContent.trim(); // Отримуємо текстове значення атрибута
+        console.log(`Відправляємо відкриття атрибуту: ${attributeId} (${attributeValue}) для гравця ${playerId} (${playerNickname})`);
+
+        // Робимо атрибут видимим для себе
+        span.style.opacity = '1';
+        console.log('Зроблено видимим атрибут для себе');
+
+        // Відправляємо оновлення на сервер
         socket.emit('revealAttribute', { 
             playerId, 
             attributeId, 
             roomCode,
             playerNickname,
-            attributeValue: selfModalLabel ? selfModalLabel.querySelector('span').textContent : 'Невідомо'
+            attributeValue // Відправляємо коректне значення атрибута
         });
     });
 });
-
-// 4. Повністю перероблений обробник події оновлення атрибутів
 socket.on('updateAttributeVisibility', function(data) {
-    console.log('Отримано оновлення видимості атрибута:', data);
-    
     const { playerId, attributeId, playerNickname, attributeValue } = data;
-    
-    // МЕТОД 1: Пошук за data-player-id
+    const formattedValue = Array.isArray(attributeValue) ? attributeValue.join(', ') : attributeValue;
+
     document.querySelectorAll('.modal[data-player-id]').forEach(modal => {
         if (modal.getAttribute('data-player-id') === playerId.toString()) {
-            console.log(`Знайдено модальне вікно для гравця ${playerId}`);
-            
-            // Шукаємо мітку з атрибутом
             const label = modal.querySelector(`label[data-attribute-id="${attributeId}"]`);
             if (label) {
-                console.log(`Знайдено мітку для атрибута ${attributeId}`);
                 const span = label.querySelector('span');
                 if (span) {
-                    // Застосовуємо кілька підходів
                     span.style.opacity = '1';
-                    span.style.visibility = 'visible';
-                    span.style.display = 'inline';
-                    console.log(`Зроблено видимим атрибут ${attributeId} для гравця ${playerId}`);
+                    const currentValue = span.textContent.trim();
+                    span.textContent = currentValue ? `${currentValue}, ${formattedValue}` : formattedValue;
                 }
             }
         }
-    });
     
+    });
+
     // МЕТОД 2: Пошук за ID модального вікна
-    // Якщо йдеться про інших гравців, шукаємо модальні вікна за шаблоном playerModal1, playerModal2, ...
     for (let i = 1; i <= 12; i++) {
         const modal = document.getElementById(`playerModal${i}`);
         if (modal && modal.getAttribute('data-player-id') === playerId.toString()) {
             console.log(`Знайдено модальне вікно ${i} для гравця ${playerId}`);
-            
             const label = modal.querySelector(`label[data-attribute-id="${attributeId}"]`);
             if (label) {
                 const span = label.querySelector('span');
                 if (span) {
                     span.style.opacity = '1';
-                    span.style.visibility = 'visible';
-                    span.style.display = 'inline';
+                    span.textContent = formattedValue; // Оновлюємо текстове значення
                     console.log(`Метод 2: Зроблено видимим атрибут ${attributeId} для гравця ${playerId}`);
                 }
             }
         }
     }
-    
-    // МЕТОД 3: Радикальний - оновлення всіх span, що належать до цього атрибута
+
+    // МЕТОД 3: Оновлення всіх span для цього атрибута
     document.querySelectorAll(`label[data-attribute-id="${attributeId}"] span`).forEach(span => {
         span.style.opacity = '1';
-        span.style.visibility = 'visible';
-        span.style.display = 'inline';
+        span.textContent = formattedValue; // Оновлюємо текстове значення
         console.log(`Метод 3: Оновлено всі span для атрибута ${attributeId}`);
     });
-    
-    // МЕТОД 4: Оголошення у вигляді повідомлення для користувача
-    const notification = document.createElement('div');
-    notification.className = 'attribute-notification';
-    notification.textContent = `Гравець ${playerNickname || playerId} відкрив характеристику: ${attributeId}`;
-    notification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #ffeb3b; color: #000; padding: 10px; border-radius: 5px; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2);';
-    document.body.appendChild(notification);
+
     
     // Видаляємо повідомлення через 5 секунд
-    setTimeout(() => {
-        notification.remove();
-    }, 5000);
+   
 });
 });
 // Додаємо обробник для радіобатонів

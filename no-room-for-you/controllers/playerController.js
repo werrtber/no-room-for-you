@@ -155,9 +155,12 @@ exports.getPlayerData = async (req, res) => {
             mainCard.flaw = flawRow[0]?.vada || '';
         }
         if (mainPlayer.items_id) {
-            const itemIds = mainPlayer.items_id;//.split(',').map(item => parseInt(item));
+            const itemIds = mainPlayer.items_id.split(',').map(id => parseInt(id.trim()));
             console.log(itemIds);
-            const [itemsRow] = await pool.execute('SELECT items FROM items WHERE items_id IN (?)', [itemIds]);
+            console.log("xyi")
+            const placeholders = itemIds.map(() => '?').join(',');
+            const query = `SELECT items FROM items WHERE items_id IN (${placeholders})`;
+            const [itemsRow] = await pool.execute(query, itemIds);
             mainCard.backpack = itemsRow.map(item => item.items);
             console.log(mainCard.backpack);
         }
