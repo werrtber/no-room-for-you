@@ -181,3 +181,15 @@ document.querySelector('.button2').addEventListener('click', function () {
         message.style.display = 'none';
     }, 2000);
 });
+
+const openBtnRules = document.getElementById("openModal");
+const closeBtnRules = document.getElementById("closeModal");
+const modalRules = document.getElementById("modal");
+
+openBtnRules.addEventListener("click", () => {
+    modalRules.classList.add("open");
+});
+
+closeBtnRules.addEventListener("click", () => {
+    modalRules.classList.remove("open");
+});
