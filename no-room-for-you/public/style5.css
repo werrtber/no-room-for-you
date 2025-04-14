@@ -284,8 +284,7 @@ body {
     border-radius: 20px;
     padding: 30px 20px;
     width: 380px;
-    max-width: 100vw;
-    height: 55vh;
+    height: 65vh;
     text-align: center;
     color: white;
     position: relative;
@@ -347,6 +346,7 @@ body {
 }
 
 .player-info input[type="radio"] {
+    flex-shrink: 0;
     appearance: none;
     width: 10px;
     height: 10px;
@@ -359,6 +359,7 @@ body {
 
 .player-info input[type="radio"]:checked {
     background: yellow;
+    flex-shrink: 0;
 }
 
 .player-info label {
@@ -366,21 +367,20 @@ body {
 }
 
 .confirm-btn {
-    position: absolute;
-    bottom: 0px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #441D3A;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 15px;
-    width: 100%;
-    position: relative;
+  position: absolute;
+  bottom: -70px;
+  background-color: #441D3A;
+  color: rgba(241, 206, 221, 1);
+  border: none;
+  padding: 10px 20px;
+  font-size: 20px;
+  border-radius: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 53%;
+  height: 13%;
+  box-shadow: 0 0 20px rgba(255,255,255,0.3);
+  position: relative;
 }
 
 .confirm-btn:hover {
@@ -513,6 +513,7 @@ body {
 }
 
 .vote-option input[type="radio"] {
+    flex-shrink: 0;
     appearance: none;
     width: 15px;
     height: 15px;
@@ -524,6 +525,7 @@ body {
 }
 
 .vote-option input[type="radio"]:checked {
+    flex-shrink: 0;
     background: yellow;
     box-shadow: 0 0 5px yellow;
 }
