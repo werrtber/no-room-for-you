@@ -138,8 +138,9 @@ modalContainer.innerHTML += modalsHtml;
     html += '<div class="up-players">';
     for (let i = 1; i <= config.top; i++) {
         const player = dbData.otherPlayers[i - 1];
+        console.log(`Rendering player ${i}:`, player);
         html += `<div class="player-up">
-        <button class="player-circle" id="player${i}" style="background-color: ${player?.color || '#FFFFFF'};"></button>
+        <button class="player-circle" id="player${i}" data-player-id="${player?.player_id}" style="background-color: ${player?.color || '#FFFFFF'};"></button>
         <span class="player-name">${player?.nickname || 'Гравець ' + i}</span>
     </div>`;
     }
@@ -151,11 +152,14 @@ modalContainer.innerHTML += modalsHtml;
     html += '<div class="side-players">';
     for (let i = config.top + 1; i <= config.top + config.sides; i++) {
         const player = dbData.otherPlayers[i - 1];
-         html += `<div class="player-left"><button class="player-circle" id="player${i}"></button><span class="player-name">${player?.nickname || 'Гравець ' + i}</span></div>`;
+        console.log(`Rendering player ${i}:`, player);
+         html += `<div class="player-left"><button class="player-circle" data-player-id="${player?.player_id}" id="player${i}"></button><span class="player-name">${player?.nickname || 'Гравець ' + i}</span></div>`;
     }
     html += '</div><div class="side-players">';
     for (let i = config.top + config.sides + 1; i <= numPlayers - 1; i++) {
-        html += `<div class="player-right"><button class="player-circle" id="player${i}"></button><span class="player-name">Гравець ${i}</span></div>`;
+        const player = dbData.otherPlayers[i - 1]; 
+        console.log(`Rendering player ${i}:`, player);
+        html += `<div class="player-right"><button class="player-circle" data-player-id="${player?.player_id}" id="player${i}"></button><span class="player-name">Гравець ${i}</span></div>`;
     }
     html += '</div></div>';
     
@@ -253,19 +257,20 @@ function createVotingOptions(numPlayers) {
     let votingOptionsHtml = '';
     
     // Додаємо опції для всіх гравців, крім головного (Ви)
-    for (let i = 1; i < numPlayers; i++) {
+    dbData.otherPlayers.forEach((player, index) => {
         votingOptionsHtml += `
             <div class="vote-option">
-                <input type="radio" id="vote-player${i}" name="vote" value="${i}">
-                <label for="vote-player${i}">${dbData.otherPlayers[i - 1]?.nickname || `Гравець ${i}`}</label>
+                <input type="radio" id="vote-player${index + 1}" name="vote" value="${player.player_id}">
+                <label for="vote-player${index + 1}">${player.nickname || `Гравець ${index + 1}`}</label>
             </div>
         `;
-    }
-    
+    });
+
     if (voteForm) {
         voteForm.innerHTML = votingOptionsHtml;
     }
 }
+
 
 // Створюємо опції голосування на основі кількості гравців
 createVotingOptions(numPlayers);
@@ -368,14 +373,17 @@ socket.on('roomUpdate', function(data) {
 // Обробник події "гравець вигнаний"
 socket.on('playerKicked', function(data) {
     const { playerId } = data;
+    console.log('Отримано команду кікнути гравця з ID:', playerId);
 
-    // Знаходимо елемент гравця за його ID
-    const playerCircle = document.querySelector(`button.player-circle[id="player${playerId}"]`);
+    // Правильно: шукаємо елемент із відповідним data-player-id
+    const playerCircle = document.querySelector(`button.player-circle[data-player-id="${playerId}"]`);
+    
     if (playerCircle) {
-        // Затемнюємо іконку гравця
         playerCircle.style.opacity = 0.5;
-        playerCircle.disabled = true; // Робимо кнопку неактивною
+        playerCircle.disabled = true;
         console.log(`Гравець з ID ${playerId} вигнаний.`);
+    } else {
+        console.warn(`Не знайдено гравця з ID ${playerId}`);
     }
 });
     const openBtnRules = document.getElementById("openModalRules");
