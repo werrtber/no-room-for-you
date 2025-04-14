@@ -1,5 +1,8 @@
 window.addEventListener('DOMContentLoaded', async function () {
-    // Функція для отримання даних з сервера
+    function isHost() {
+        return sessionStorage.getItem('is_host') === 'true';
+    }
+    
     async function fetchDataFromDB() {
         try {
             const player_id = sessionStorage.getItem('player_id'); // Отримуємо player_id з sessionStorage
@@ -233,29 +236,65 @@ modalContainer.innerHTML += modalsHtml;
 
 // Отримуємо дані про роль гравця при підключенні до кімнати
 const isPlayerHost = sessionStorage.getItem('is_host') === 'true';
+// socket.on('roomJoined', function(data) {
+//     const { position, isHost } = data;
+//     sessionStorage.setItem('is_host', isHost ? 'true' : 'false');    
+//     console.log(`Гравець зайшов у кімнату. Роль: ${isPlayerHost ? 'Хост' : 'Гравець'}`);
+
+//     // Відразу перевіряємо роль і показуємо кнопку, якщо гравець є хостом
+//     if (startVoteButton) {
+//         startVoteButton.style.display = isPlayerHost ? 'block' : 'none';
+//         console.log(`Кнопка "Почати голосування" показана для хоста: ${isPlayerHost}`);
+        
+//     }
+// });
+
+function createVotingOptions(numPlayers) {
+    let votingOptionsHtml = '';
+    
+    // Додаємо опції для всіх гравців, крім головного (Ви)
+    for (let i = 1; i < numPlayers; i++) {
+        votingOptionsHtml += `
+            <div class="vote-option">
+                <input type="radio" id="vote-player${i}" name="vote" value="${i}">
+                <label for="vote-player${i}">${dbData.otherPlayers[i - 1]?.nickname || `Гравець ${i}`}</label>
+            </div>
+        `;
+    }
+    
+    if (voteForm) {
+        voteForm.innerHTML = votingOptionsHtml;
+    }
+}
+
+// Створюємо опції голосування на основі кількості гравців
+createVotingOptions(numPlayers);
+
+
 socket.on('roomJoined', function(data) {
-    const { position, isHost: isPlayerHost } = data;
+    const { position, isHost } = data;
+    sessionStorage.setItem('is_host', isHost ? 'true' : 'false');    
+
     console.log(`Гравець зайшов у кімнату. Роль: ${isPlayerHost ? 'Хост' : 'Гравець'}`);
 
-    // Відразу перевіряємо роль і показуємо кнопку, якщо гравець є хостом
     if (startVoteButton) {
+        // Показуємо або ховаємо кнопку
         startVoteButton.style.display = isPlayerHost ? 'block' : 'none';
         console.log(`Кнопка "Почати голосування" показана для хоста: ${isPlayerHost}`);
+
+        // Додаємо або перестворюємо обробник КОРЕКТНО (уникаємо дублювань)
+        startVoteButton.onclick = () => {
+            if (!isPlayerHost) {
+                alert("Ви не є хостом!");
+                return;
+            }
+            closeAllModals(); 
+            voteModal.classList.add('open');
+            console.log('Модальне вікно голосування відкрито.');
+        };
     }
 });
 
-// Додаємо обробник для кнопки "Почати голосування"
-if (startVoteButton) {
-    startVoteButton.addEventListener('click', () => {
-        if (!isHost()) {
-            alert("Ви не є хостом!");
-            return;
-        }
-
-        voteModal.classList.add('open');
-        console.log('Модальне вікно голосування відкрито.');
-    });
-}
 
 // Обробник закриття модального вікна голосування
 if (closeVoteModal) {
@@ -334,7 +373,7 @@ socket.on('playerKicked', function(data) {
     const playerCircle = document.querySelector(`button.player-circle[id="player${playerId}"]`);
     if (playerCircle) {
         // Затемнюємо іконку гравця
-        playerCircle.style.filter = 'grayscale(100%)';
+        playerCircle.style.opacity = 0.5;
         playerCircle.disabled = true; // Робимо кнопку неактивною
         console.log(`Гравець з ID ${playerId} вигнаний.`);
     }

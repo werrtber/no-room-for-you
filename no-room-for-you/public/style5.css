@@ -746,3 +746,21 @@ body {
     padding: 1px;
     margin: 0px;
   }
+
+.confirm-btn-vote{
+  position: absolute;
+  bottom: -50px;
+  background-color: #702345;
+  color: rgba(241, 206, 221, 1);
+  border: none;
+  padding: 10px 20px;
+  font-size: 20px;
+  border-radius: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 90%;
+  height: 13%;
+  box-shadow: 0 0 15px rgba(241,206,221,0.3), inset 0 0 20px rgba(53,24,37,0.32);
+  text-shadow: 2px 2px 5px rgba(241, 206, 221, 0.2);
+  position: relative;
+}
