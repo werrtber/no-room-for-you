@@ -709,3 +709,33 @@ body {
     flex-direction: row;
   } */
   
+
+  #timerContainer {
+    display: flex;
+    align-items: center;
+    font-family: sans-serif;
+    position: fixed;
+    font-family: 'Orbitron', monospace;
+    font-size: 2rem;
+    font-weight: 600;
+    top: 92%;
+    left: 2%;
+    padding: 1px;
+  }
+
+  #timer {
+    min-width: 80px;
+    color: red;
+  }
+
+  .button {
+    padding: 4px 8px;
+    margin-left: 8px;
+    font-size: 2rem;
+    cursor: pointer;
+    background-color: none;
+    border: none;
+    background: none;
+    padding: 1px;
+    margin: 0px;
+  }

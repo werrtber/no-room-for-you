@@ -354,7 +354,43 @@ socket.on('playerKicked', function(data) {
     closeBtnRules.addEventListener("click", () => {
         modalRules.classList.remove("open");
     });
-    // 1. Спершу перевіримо, чи правильно працює сокет-з'єднання
+
+    const timerElement = document.getElementById('timer');
+    const startBtn = document.getElementById('startBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    let seconds = 60; // починаємо з 1 хвилини
+    let interval = null;
+
+    function updateTimer() {
+      const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const secs = (seconds % 60).toString().padStart(2, '0');
+      timerElement.textContent = `${mins}:${secs}`;
+    }
+
+    startBtn.addEventListener('click', () => {
+      if (!interval && seconds > 0) {
+        interval = setInterval(() => {
+          seconds--;
+          updateTimer();
+          if (seconds <= 0) {
+            clearInterval(interval);
+            interval = null;
+            // тут можна додати звук або дію по завершенню
+          }
+        }, 1000);
+      }
+    });
+
+    resetBtn.addEventListener('click', () => {
+      clearInterval(interval);
+      interval = null;
+      seconds = 60; // назад до 1 хвилини
+      updateTimer();
+    });
+
+    // Початкове оновлення
+    updateTimer();  // 1. Спершу перевіримо, чи правильно працює сокет-з'єднання
 
 // Додаємо явну перевірку встановлення з'єднання
 socket.on('connect', function() {
