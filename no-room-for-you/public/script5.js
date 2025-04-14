@@ -221,73 +221,128 @@ modalContainer.innerHTML += modalsHtml;
         }
     });
     
-const startVoteButton = document.getElementById('startVoteButton');
+    const startVoteButton = document.getElementById('startVoteButton');
     const voteModal = document.getElementById('voteModal');
     const closeVoteModal = document.getElementById('closeVoteModal');
     const confirmVoteButton = document.getElementById('confirmVote');
     const voteForm = document.getElementById('voteForm');
+    const socket = io();
+   // Функція для перевірки, чи є гравець хостом
+function isHost() {
+    const isHost = sessionStorage.getItem('is_host'); // Отримуємо значення з sessionStorage
+    return isHost === 'true'; // Повертаємо true, якщо гравець є хостом
+}
 
-    // Функція для створення опцій голосування
-    function createVotingOptions(numPlayers) {
-        let votingOptionsHtml = '';
-        
-        // Додаємо опції для всіх гравців, крім головного (Ви)
-        for (let i = 1; i < numPlayers; i++) {
-            votingOptionsHtml += `
-                <div class="vote-option">
-                    <input type="radio" id="vote-player${i}" name="vote" value="${i}">
-                    <label for="vote-player${i}">${dbData.otherPlayers[i - 1]?.nickname || `Гравець ${i}`}</label>
-                </div>
-            `;
-        }
-        
-        if (voteForm) {
-            voteForm.innerHTML = votingOptionsHtml;
-        }
+// Отримуємо дані про роль гравця при підключенні до кімнати
+socket.on('roomJoined', function(data) {
+    const { position, isHost: isPlayerHost } = data;
+    console.log(`Гравець зайшов у кімнату. Роль: ${isPlayerHost ? 'Хост' : 'Гравець'}`);
+
+    // Зберігаємо роль гравця у sessionStorage
+    sessionStorage.setItem('is_host', isPlayerHost);
+
+    // Відразу перевіряємо роль і показуємо кнопку, якщо гравець є хостом
+    if (startVoteButton) {
+        startVoteButton.style.display = isPlayerHost ? 'block' : 'none';
+        console.log(`Кнопка "Почати голосування" показана для хоста: ${isPlayerHost}`);
     }
+});
 
-    // Створюємо опції голосування на основі кількості гравців
-    createVotingOptions(numPlayers);
-
+// Додаємо обробник для кнопки "Почати голосування"
+if (startVoteButton) {
     startVoteButton.addEventListener('click', () => {
-        closeAllModals(); // Закриваємо всі інші модальні вікна
-        voteModal.classList.add('open');
-        console.log('Відкрито модальне вікно голосування');
-    });
+        if (!isHost()) {
+            alert("Ви не є хостом!");
+            return;
+        }
 
-    // Закриваємо модальне вікно голосування
+        voteModal.classList.add('open');
+        console.log('Модальне вікно голосування відкрито.');
+    });
+}
+
+// Обробник закриття модального вікна голосування
+if (closeVoteModal) {
     closeVoteModal.addEventListener('click', () => {
         voteModal.classList.remove('open');
-        console.log('Закрито модальне вікно голосування');
+        console.log('Модальне вікно голосування закрито.');
     });
-    confirmVoteButton.addEventListener("click", () => {
+}
+
+// Обробка підтвердження голосування
+if (confirmVoteButton) {
+    confirmVoteButton.addEventListener('click', () => {
         const selectedPlayer = document.querySelector('input[name="vote"]:checked');
-        
-        if (selectedPlayer) {
-            const playerNumber = selectedPlayer.value;
-            
-            // Знімаємо ефект проголосованості з усіх гравців
-            for (let i = 1; i < numPlayers; i++) {
-                const playerElement = document.getElementById(`player${i}`);
-                if (playerElement) {
-                    playerElement.parentElement.classList.remove("voted");
-                }
-            }
-            
-            // Застосовуємо ефект проголосованості до вибраного гравця
-            const votedPlayerElement = document.getElementById(`player${playerNumber}`);
-            if (votedPlayerElement) {
-                votedPlayerElement.parentElement.classList.add("voted");
-            }
-            
-            // Закриваємо модальне вікно
-            voteModal.classList.remove("open");
-        } else {
-            // Попередження, якщо жоден гравець не вибраний
-            alert("Будь ласка, виберіть гравця для голосування!");
+        if (!selectedPlayer) {
+            alert("Будь ласка, виберіть гравця для вигнання!");
+            return;
         }
+
+        const playerId = selectedPlayer.value;
+        const roomCode = sessionStorage.getItem('room_code');
+
+        // Відправляємо команду на сервер для вигнання гравця
+        socket.emit('kickPlayer', { room_code: roomCode, playerId });
+
+        // Закриваємо модальне вікно голосування
+        voteModal.classList.remove('open');
+        console.log(`Гравець з ID ${playerId} вигнаний.`);
+    });
+}
+
+// Додаємо гравців до списку, включаючи хоста
+function renderPlayersList(players) {
+    const playersContainer = document.querySelector('.main-fifth');
+    playersContainer.innerHTML = ''; // Очищаємо контейнер
+
+    players.forEach((player, index) => {
+        const playerHtml = `
+            <div class="player">
+                <button class="player-circle" id="player${player.playerId}" style="background-color: ${player.color || '#FFFFFF'};"></button>
+                <span class="player-name">${player.nickname}</span>
+                ${isHost() && index > 0 ? `<button class="kick-button" data-player-id="${player.playerId}">Вигнати</button>` : ''}
+            </div>
+        `;
+        playersContainer.innerHTML += playerHtml;
     });
 
+    // Після оновлення списку гравців перевіряємо роль хоста
+    if (startVoteButton) {
+        startVoteButton.style.display = isHost() ? 'block' : 'none';
+    }
+
+    // Додаємо обробники для кнопок "Вигнати"
+    if (isHost()) {
+        document.querySelectorAll('.kick-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const playerId = button.getAttribute('data-player-id');
+                const roomCode = sessionStorage.getItem('room_code');
+                socket.emit('kickPlayer', { room_code: roomCode, playerId });
+                console.log(`Відправлено запит на вигнання гравця з ID ${playerId}`);
+            });
+        });
+    }
+}
+
+// Оновлюємо список гравців при отриманні даних від сервера
+socket.on('roomUpdate', function(data) {
+    const { players } = data;
+    renderPlayersList(players);
+});
+
+// Обробник події "гравець вигнаний"
+socket.on('playerKicked', function(data) {
+    const { playerId } = data;
+
+    // Знаходимо елемент гравця за його ID
+    const playerCircle = document.querySelector(`button.player-circle[id="player${playerId}"]`);
+    if (playerCircle) {
+        // Затемнюємо іконку гравця
+        playerCircle.style.filter = 'grayscale(100%)';
+        playerCircle.disabled = true; // Робимо кнопку неактивною
+        console.log(`Гравець з ID ${playerId} вигнаний.`);
+    }
+});
     const openBtnRules = document.getElementById("openModalRules");
     const closeBtnRules = document.getElementById("closeModalRules");
     const modalRules = document.getElementById("modalRules");
@@ -300,7 +355,6 @@ const startVoteButton = document.getElementById('startVoteButton');
         modalRules.classList.remove("open");
     });
     // 1. Спершу перевіримо, чи правильно працює сокет-з'єднання
-const socket = io(); 
 
 // Додаємо явну перевірку встановлення з'єднання
 socket.on('connect', function() {

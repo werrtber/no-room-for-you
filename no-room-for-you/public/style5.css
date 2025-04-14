@@ -243,6 +243,12 @@ body {
     box-shadow: 4px 7px 4px 0px #00000040 inset;
     cursor: pointer;
 }
+/* Стиль для затемнених гравців */
+.player-circle.kicked {
+  filter: grayscale(100%);
+  pointer-events: none; /* Забороняємо взаємодію */
+  opacity: 0.5; /* Зменшуємо прозорість */
+}
 
 .player-card {
     z-index: 3;

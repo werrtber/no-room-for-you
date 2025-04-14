@@ -44,7 +44,22 @@ socket.on('joinGameRoom', function(data) {
         });
     }
 });
+// Обробник події "вигнати гравця"
+// Обробник події "вигнати гравця"
+socket.on('kickPlayer', async ({ room_code, playerId }) => {
+  console.log(`❌ Хост вигнав гравця з ID ${playerId} з кімнати ${room_code}`);
+  
+  // Передаємо всім гравцям у кімнаті інформацію про вигнаного гравця
+  io.to(room_code).emit('playerKicked', { playerId });
 
+  // Оновлюємо список гравців у кімнаті (якщо потрібно)
+  const pool = db();
+  const [rows] = await pool.execute(
+    'SELECT player_id, nickname, color FROM player JOIN room ON player.room_id = room.room_id WHERE room_code = ?',
+    [room_code]
+  );
+  sendRoomUpdate(room_code, rows);
+});
 // Оновлюємо обробник відкриття атрибутів
 socket.on('revealAttribute', ({ playerId, attributeId, roomCode, playerNickname, attributeValue }) => {
     console.log(`👀 Гравець ${playerId} (${playerNickname}) відкрив характеристику: ${attributeId} у кімнаті ${roomCode}`);
