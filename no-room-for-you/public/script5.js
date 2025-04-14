@@ -36,6 +36,7 @@ window.addEventListener('DOMContentLoaded', async function () {
 
     // Отримуємо дані з сервера
     const dbData = await fetchDataFromDB();
+    console.log(dbData);
     const numPlayers = dbData.numPlayers || 6;
     const mainContainer = document.querySelector('.main-fifth');
     const modalContainer = document.getElementById('modalContainer');
@@ -228,18 +229,14 @@ modalContainer.innerHTML += modalsHtml;
     const voteForm = document.getElementById('voteForm');
     const socket = io();
    // Функція для перевірки, чи є гравець хостом
-function isHost() {
-    const isHost = sessionStorage.getItem('is_host'); // Отримуємо значення з sessionStorage
-    return isHost === 'true'; // Повертаємо true, якщо гравець є хостом
-}
+
+
 
 // Отримуємо дані про роль гравця при підключенні до кімнати
+const isPlayerHost = sessionStorage.getItem('is_host') === 'true';
 socket.on('roomJoined', function(data) {
     const { position, isHost: isPlayerHost } = data;
     console.log(`Гравець зайшов у кімнату. Роль: ${isPlayerHost ? 'Хост' : 'Гравець'}`);
-
-    // Зберігаємо роль гравця у sessionStorage
-    sessionStorage.setItem('is_host', isPlayerHost);
 
     // Відразу перевіряємо роль і показуємо кнопку, якщо гравець є хостом
     if (startVoteButton) {
