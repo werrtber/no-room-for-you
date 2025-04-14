@@ -169,6 +169,8 @@ body {
 }
 
 .side-players{
+    color: rgba(241, 206, 221, 1);
+    text-shadow: 2px 2px 5px rgba(32, 32, 53, 1);
     display: flex;
     padding-inline:10px;
     flex-direction: column;
@@ -189,6 +191,8 @@ body {
 }
 
 .up-players {
+    color: rgba(241, 206, 221, 1);
+    text-shadow: 2px 2px 5px rgba(32, 32, 53, 1);
     display: flex;
     flex-direction: row;
     padding-top: 10px;
@@ -199,6 +203,8 @@ body {
 }
 
 .player {
+    color: rgba(241, 206, 221, 1);
+    text-shadow: 2px 2px 5px rgba(32, 32, 53, 1);
     position: absolute;
     bottom: 0;
     left: 50%;
@@ -369,7 +375,7 @@ body {
 .confirm-btn {
   position: absolute;
   bottom: -50px;
-  background-color: #441D3A;
+  background-color: #702345;
   color: rgba(241, 206, 221, 1);
   border: none;
   padding: 10px 20px;
@@ -379,7 +385,8 @@ body {
   cursor: pointer;
   width: 53%;
   height: 13%;
-  box-shadow: 0 0 20px rgba(255,255,255,0.3);
+  box-shadow: 0 0 10px rgba(241,206,221,0.3), inset 0 0 20px rgba(53,24,37,0.32);
+  text-shadow: 2px 2px 5px rgba(241, 206, 221, 0.2);
   position: relative;
 }
 
