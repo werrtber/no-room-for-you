@@ -36,7 +36,6 @@ window.addEventListener('DOMContentLoaded', async function () {
 
     // Отримуємо дані з сервера
     const dbData = await fetchDataFromDB();
-    console.log(dbData);
     const numPlayers = dbData.numPlayers || 6;
     const mainContainer = document.querySelector('.main-fifth');
     const modalContainer = document.getElementById('modalContainer');
@@ -351,7 +350,7 @@ socket.on('playerKicked', function(data) {
     closeBtnRules.addEventListener("click", () => {
         modalRules.classList.remove("open");
     });
-
+    
     const timerElement = document.getElementById('timer');
     const startBtn = document.getElementById('startBtn');
     const resetBtn = document.getElementById('resetBtn');
@@ -387,7 +386,7 @@ socket.on('playerKicked', function(data) {
     });
 
     // Початкове оновлення
-    updateTimer();  // 1. Спершу перевіримо, чи правильно працює сокет-з'єднання
+    updateTimer();      // 1. Спершу перевіримо, чи правильно працює сокет-з'єднання
 
 // Додаємо явну перевірку встановлення з'єднання
 socket.on('connect', function() {

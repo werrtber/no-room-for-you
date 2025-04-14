@@ -157,7 +157,6 @@ exports.getPlayerData = async (req, res) => {
         if (mainPlayer.items_id) {
             const itemIds = mainPlayer.items_id.split(',').map(id => parseInt(id.trim()));
             console.log(itemIds);
-            console.log("xyi")
             const placeholders = itemIds.map(() => '?').join(',');
             const query = `SELECT items FROM items WHERE items_id IN (${placeholders})`;
             const [itemsRow] = await pool.execute(query, itemIds);

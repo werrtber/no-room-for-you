@@ -368,7 +368,7 @@ body {
 
 .confirm-btn {
   position: absolute;
-  bottom: -70px;
+  bottom: -50px;
   background-color: #441D3A;
   color: rgba(241, 206, 221, 1);
   border: none;
