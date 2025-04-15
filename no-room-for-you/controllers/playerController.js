@@ -67,50 +67,7 @@ exports.getPlayerData = async (req, res) => {
         mainPlayer.childfreeStatus = mainCard.childfreeStatus;
         console.log(mainCard);
         console.log(mainPlayer);
-        // Якщо job_id немає - згенерувати нову професію
-        // if (!mainPlayer.job_id) {
-        //     const randomJob = professions[Math.floor(Math.random() * professions.length)].job;
-        //     mainCard.profession = randomJob;
-        //     // Оновлення job_id в БД
-        //     const [jobRow] = await pool.execute('SELECT job_id FROM job WHERE job = ?', [randomJob]);
-        //     mainPlayer.job_id = jobRow[0]?.job_id;
-        // }
-        
-        // // Аналогічно для інших полів:
-        // if (!mainPlayer.hobby_id) {
-        //     const randomSkill = skills[Math.floor(Math.random() * skills.length)].hobby;
-        //     mainCard.skill = randomSkill;
-        //     const [hobbyRow] = await pool.execute('SELECT hobby_id FROM hobby WHERE hobby = ?', [randomSkill]);
-        //     mainPlayer.hobby_id = hobbyRow[0]?.hobby_id;
-        // }
-        
-        // if (!mainPlayer.health_id) {
-        //     const randomHealth = healthConditions[Math.floor(Math.random() * healthConditions.length)].health;
-        //     mainCard.health = randomHealth;
-        //     const [healthRow] = await pool.execute('SELECT health_id FROM health WHERE health = ?', [randomHealth]);
-        //     mainPlayer.health_id = healthRow[0]?.health_id;
-        // }
-        
-        // if (!mainPlayer.vada_id) {
-        //     const randomFlaw = flaws[Math.floor(Math.random() * flaws.length)].vada;
-        //     mainCard.flaw = randomFlaw;
-        //     const [flawRow] = await pool.execute('SELECT vada_id FROM vada WHERE vada = ?', [randomFlaw]);
-        //     mainPlayer.vada_id = flawRow[0]?.vada_id;
-        // }
-        
-        // // Генерація предметів, якщо items_id відсутній
-        // if (!mainPlayer.items_id) {
-        //     const randomItems = backpackItems
-        //         .sort(() => 0.5 - Math.random())
-        //         .slice(0, 3)
-        //         .map(item => item.items);
-        //     mainCard.backpack = randomItems;
-        //     const itemIds = randomItems.map(item => 
-        //         backpackItems.find(i => i.items === item).items_id
-        //     );
-        //     mainPlayer.items_id = itemIds.join(',');
-        // }
-        
+      
         // Оновлення даних гравця в БД
         await pool.execute(
             `UPDATE player SET 
