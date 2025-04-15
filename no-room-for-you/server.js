@@ -14,7 +14,7 @@ const io = new Server(server, {
     origin: '*',
   }
 });
-
+const roomTimers = {}; // Об'єкт для зберігання часу кожної кімнати
 io.on('connection', (socket) => {
   console.log('🟢 Socket підключено:', socket.id);
   // Коли хост перегортає історії
@@ -162,7 +162,6 @@ socket.on('revealAttribute', async ({ playerId, attributeId, roomCode, playerNic
       const playerCount = players[0].count;
       socket.emit('playerCountResponse', { playerCount });
     });
-
     // Обробка відключення
     socket.on('disconnect', async () => {
       //await pool.execute('UPDATE player SET room_id = null WHERE player_id = ?', [player_id]);
@@ -172,6 +171,37 @@ socket.on('revealAttribute', async ({ playerId, attributeId, roomCode, playerNic
       );
       sendRoomUpdate(room_code, rows);
     });
+  });
+    socket.on('startTimer', async ({ room_code }) => {
+      if (!roomTimers[room_code]) {
+          roomTimers[room_code] = 60; // Початковий час (60 секунд)
+      }
+
+      console.log(`⏳ Таймер запущено для кімнати: ${room_code}`);
+
+      // Запускаємо інтервал для оновлення часу
+      const intervalId = setInterval(async () => {
+          if (roomTimers[room_code] > 0) {
+              roomTimers[room_code]--;
+              io.to(room_code).emit('updateTimer', { timeLeft: roomTimers[room_code] });
+          } else {
+              clearInterval(intervalId); // Зупиняємо таймер
+              io.to(room_code).emit('timerFinished'); // Повідомляємо про завершення
+          }
+      }, 1000);
+
+      // Відправляємо початковий час всім гравцям у кімнаті
+      io.to(room_code).emit('updateTimer', { timeLeft: roomTimers[room_code] });
+  
+
+  // Обробник для зупинки таймера
+  socket.on('stopTimer', ({ room_code }) => {
+      if (roomTimers[room_code]) {
+          clearInterval(roomTimers[room_code]); // Зупиняємо інтервал
+          delete roomTimers[room_code]; // Видаляємо таймер для кімнати
+          io.to(room_code).emit('timerStopped'); // Повідомляємо про зупинку
+      }
+  });
   });
 });
 

@@ -246,7 +246,7 @@ window.addEventListener('DOMContentLoaded', async function () {
 
     socket.on('roomJoined', function(data) {
         const { position, isHost } = data;
-        sessionStorage.setItem('is_host', isHost ? 'true' : 'false');    
+        //sessionStorage.setItem('is_host', isHost ? 'true' : 'false');    
         console.log(`Гравець зайшов у кімнату. Роль: ${isPlayerHost ? 'Хост' : 'Гравець'}`);
         if (startVoteButton) {
             // Показуємо або ховаємо кнопку
@@ -356,41 +356,55 @@ window.addEventListener('DOMContentLoaded', async function () {
         modalRules.classList.remove("open");
     });
 
-    const timerElement = document.getElementById('timer');
-    const startBtn = document.getElementById('startBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    let seconds = 60; // починаємо з 1 хвилини
-    let interval = null;
+    // Отримуємо елементи таймера
+const timerElement = document.getElementById('timer');
+const startBtn = document.getElementById('startBtn');
+const resetBtn = document.getElementById('resetBtn');
 
-    function updateTimer() {
-        const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
-        const secs = (seconds % 60).toString().padStart(2, '0');
-        timerElement.textContent = `${mins}:${secs}`;
+// Функція для оновлення відображення таймера
+function updateTimerDisplay(timeLeft) {
+    const mins = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+    const secs = (timeLeft % 60).toString().padStart(2, '0');
+    timerElement.textContent = `${mins}:${secs}`;
+}
+
+// Подія для запуску таймера
+startBtn.addEventListener('click', () => {
+    const roomCode = sessionStorage.getItem('room_code');
+    if (isHost()) {
+        socket.emit('startTimer', { room_code: roomCode }); // Запускаємо таймер на сервері
+    } else {
+        alert("Ви не є хостом!");
     }
+});
 
-    startBtn.addEventListener('click', () => {
-        if (!interval && seconds > 0) {
-            interval = setInterval(() => {
-                seconds--;
-                updateTimer();
-                if (seconds <= 0) {
-                    clearInterval(interval);
-                    interval = null;
-                    // тут можна додати звук або дію по завершенню
-                }
-            }, 1000);
-        }
-    });
+// Подія для зупинки таймера
+resetBtn.addEventListener('click', () => {
+    const roomCode = sessionStorage.getItem('room_code');
+    if (isHost()) {
+        socket.emit('stopTimer', { room_code: roomCode }); // Зупиняємо таймер на сервері
+    } else {
+        alert("Ви не є хостом!");
+    }
+});
 
-    resetBtn.addEventListener('click', () => {
-        clearInterval(interval);
-        interval = null;
-        seconds = 60; // назад до 1 хвилини
-        updateTimer();
-    });
+// Обробник оновлення таймера
+socket.on('updateTimer', function(data) {
+    const { timeLeft } = data;
+    updateTimerDisplay(timeLeft); // Оновлюємо відображення таймера
+});
 
-    // Початкове оновлення
-    updateTimer();
+// Обробник завершення таймера
+socket.on('timerFinished', function() { // Повідомляємо про завершення
+    updateTimerDisplay(0); // Встановлюємо час на "00:00"
+});
+
+// Обробник зупинки таймера
+socket.on('timerStopped', function() {// Повідомляємо про зупинку
+    updateTimerDisplay(60); // Встановлюємо час на початкове значення
+});
+    
+
 
     // Додаємо явну перевірку встановлення з'єднання
     socket.on('connect', function() {
