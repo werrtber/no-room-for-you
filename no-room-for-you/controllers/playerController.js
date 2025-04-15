@@ -204,7 +204,7 @@ exports.getPlayerData = async (req, res) => {
         `, [room_id, player_id]);
 
         let otherPlayers = otherPlayersRows.map(player => ({
-            player_id: player_id,
+            player_id: player.player_id,
             nickname: player.nickname,
             age: player.age,
             gender: player.gender,
